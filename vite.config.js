@@ -75,6 +75,7 @@ import {
   validTerrainResult,
 } from './src/data/terrainHeightsProxy.js';
 import { VOICE_MODELS, isKnownVoiceTier, resolveVoiceModel } from './src/voice/voiceCost.js';
+import { PROVIDER_CATALOG, PROVIDER_PRICING_VERSION, providerConfiguration } from './src/data/providerHealth.js';
 
 /** Resolve __dirname for ESM context. */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -7455,6 +7456,38 @@ function normalizedHeading(value) {
   return heading !== null && heading >= 0 && heading <= 360 ? heading : null;
 }
 
+/** Local, sanitized provider health snapshot. It reports capability state and
+ * process-local counters only; credentials and upstream response bodies never
+ * cross this boundary. */
+function providerHealthEndpoint() {
+  const startedAt = Date.now();
+  const attempts = new Map();
+  return {
+    name: 'provider-health-endpoint',
+    configureServer(server) {
+      server.middlewares.use('/api/health/providers', (req, res) => {
+        if (req.method !== 'GET') { res.statusCode = 405; res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify({ error: 'Method not allowed' })); return; }
+        const configuration = providerConfiguration(PROVIDER_CATALOG, process.env);
+        const providers = configuration.map((item) => ({
+          id: item.id,
+          state: item.configured ? 'READY' : 'KEYLESS',
+          attempts: attempts.get(item.id) || 0,
+          lastAttempt: null,
+          lastSuccess: null,
+          failureCategory: null,
+        }));
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-store');
+        res.end(JSON.stringify({ generatedAt: Date.now(), processStartedAt: startedAt, pricingVersion: PROVIDER_PRICING_VERSION, configuration, providers }));
+      });
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use('/api/health/providers', (req, res) => { res.statusCode = 404; res.end(); });
+    },
+  };
+}
+
 function normalizeAisTimestamp(value) {
   const text = stringValue(value);
   if (!text) return new Date().toISOString();
@@ -7759,6 +7792,7 @@ export default defineConfig(({ mode }) => {
       trackBackfillProxies(),
       openAiRealtimeProxy(),
       googlePlacesContextProxy(),
+      providerHealthEndpoint(),
       keySetupEndpoint(),
     ],
     server: {

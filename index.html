@@ -928,6 +928,17 @@
     <p class="key-setup-note" data-key-setup-status role="status" aria-live="polite">The Google Maps key buys the photorealistic planet — everything else stacks on top.</p>
   </aside>
 
+  <button id="provider-health-chip" type="button" aria-controls="provider-health-panel" aria-haspopup="dialog">
+    <span class="material-symbols-outlined" aria-hidden="true">monitor_heart</span><span>PROVIDER HEALTH</span>
+  </button>
+  <aside id="provider-health-panel" role="dialog" aria-labelledby="provider-health-title" hidden>
+    <header class="provider-health-header"><span class="provider-health-kicker">GROUND STATION · LOCAL DIAGNOSTICS</span><button type="button" data-provider-health-close aria-label="Close provider health">×</button></header>
+    <h2 id="provider-health-title">Provider health center</h2>
+    <p class="provider-health-description">A local view of configuration, freshness, and app activity. Counts reset when this server restarts. Estimates are not provider invoices.</p>
+    <div data-provider-health-rows></div>
+    <div class="provider-health-footer"><button type="button" data-provider-health-copy>COPY SANITIZED DIAGNOSTICS</button><small data-provider-health-note role="status"></small></div>
+  </aside>
+
   <!-- Intelligence HUD Overlay -->
   <div id="intel-hud"></div>
   <button id="correlation-launcher" type="button" aria-controls="correlation-board">CORRELATION BOARD</button>

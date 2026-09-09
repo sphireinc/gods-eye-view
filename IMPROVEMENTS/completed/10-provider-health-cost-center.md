@@ -52,3 +52,14 @@ From one panel, a user can tell what is configured, what last succeeded, what is
 cached or degraded, and what the app estimates it has spent. The information is
 useful without exposing secrets and clearly distinguishes application telemetry
 from provider billing truth.
+
+## Implementation status
+
+Completed on `improvements/10-provider-health-cost-center`. The branch now
+includes a versioned provider catalog and pricing registry, recursive diagnostic
+redaction, configuration/cost helpers, a local-only `/api/health/providers`
+endpoint, and a provider-health panel. The panel labels keyless and ready
+providers, shows process-local attempts and approximate spend, supports
+reversible pause/resume hooks, and copies only sanitized diagnostics. The
+endpoint deliberately reports no credentials, response bodies, or unrestricted
+paths; production preview returns no health data.

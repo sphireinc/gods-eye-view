@@ -42,6 +42,7 @@ import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
 import { initAlertPanel } from './alerts/alertPanel.js';
 import { initMissionPanel } from './missions/missionPanel.js';
+import { initProviderHealthPanel } from './data/providerHealthPanel.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
@@ -51,6 +52,7 @@ const alertPanel = initAlertPanel();
 import { initCctvCoveragePanel } from './cctv/coveragePanel.js';
 
 initCctvCoveragePanel();
+initProviderHealthPanel();
 
 /**
  * Extract a human-readable error message from any thrown value.
@@ -296,6 +298,7 @@ async function init() {
     }
     dataManager.buildTogglePanel(document.getElementById('data-toggles'));
     styleManager.attachDataManager(dataManager);
+    initProviderHealthPanel({ manager: dataManager });
 
     // Initialize deterministic scene playback for social clip capture
     const sceneDirector = new SceneDirector(viewer, styleManager, dataManager);
