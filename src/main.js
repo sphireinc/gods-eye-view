@@ -2,6 +2,7 @@ import * as Cesium from 'cesium';
 import { initAnnotations } from './annotations/index.js';
 import { flyToAustin } from './camera.js';
 import { initCockpitCloudEffects } from './cockpitCloudEffects.js';
+import { initCorrelationBoard } from './correlation/correlationBoard.js';
 import aisLiveVesselsLayer from './data/aisLiveVessels.js';
 import bikeshareLayer from './data/bikeshare.js';
 import cctvLayer from './data/cctv.js';
@@ -33,24 +34,13 @@ import {
 } from './renderGovernor.js';
 import { SceneDirector } from './scenes/director.js';
 import { installScopeMask } from './scopeMask.js';
-<<<<<<< HEAD
+import { initTimeRail } from './time/timeRail.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
-import { initTimeRail } from './time/timeRail.js';
-import { initCorrelationBoard } from './correlation/correlationBoard.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
 initCorrelationBoard();
-=======
-import { initFirstRunExperience } from './firstRunExperience.js';
-import { initKeySetup } from './keySetup.js';
-import { loadPhotorealisticTileset } from './mapStartup.js';
-import { initCorrelationBoard } from './correlation/correlationBoard.js';
-
-initLogoGaze();
-initCorrelationBoard();
->>>>>>> d637e02 (Complete explainable public event correlation)
 
 /**
  * Extract a human-readable error message from any thrown value.
@@ -225,7 +215,9 @@ async function init() {
     dataManager.setObservationSink(recordLayerObservation);
     if (timeController) {
       dataManager.attachReplayController(timeController);
-      window.addEventListener('gev:replay-frame', (event) => dataManager.consumeReplayFrame(event.detail));
+      window.addEventListener('gev:replay-frame', (event) =>
+        dataManager.consumeReplayFrame(event.detail),
+      );
     }
     dataManager.register(flightsLayer);
     dataManager.register(militaryFlightsLayer);
