@@ -131,6 +131,8 @@ export class DataLayerManager {
     this._allowQaRegistration = allowQaRegistration === true;
     this._qaLayerIds = new Set();
     this._observationSink = null;
+    this._replayState = null;
+    this._replayUnsubscribe = null;
   }
 
   register(layerModule) {
@@ -308,9 +310,9 @@ export class DataLayerManager {
       entry.lifecycleState !== 'enabled' ||
       entry.destroying ||
       entry.refreshing ||
-      signal?.aborted
-    )
-      return false;
+      signal?.aborted ||
+      this._replayState?.mode === 'REPLAY'
+    ) return false;
     const refreshEpoch = ++entry.refreshEpoch;
     entry.refreshing = true;
     this._refreshTogglePanel();
@@ -2004,6 +2006,37 @@ export class DataLayerManager {
     if (typeof callback !== 'function') return () => {};
     this._listeners.add(callback);
     return () => this._listeners.delete(callback);
+  }
+
+  /**
+   * Attach the deterministic replay clock. While replaying, live polling is
+   * suspended so a historical view can never be silently mixed with current
+   * provider data. Layers may implement consumeReplayFrame(frame) when they
+   * have a normalized historical renderer; other layers remain unavailable.
+   */
+  attachReplayController(controller) {
+    this._replayUnsubscribe?.();
+    this._replayUnsubscribe = null;
+    if (!controller?.subscribe) return () => {};
+    this._replayUnsubscribe = controller.subscribe((state) => {
+      this._replayState = state;
+      if (state.mode === 'REPLAY') {
+        for (const [layerId, entry] of this.layers) this._invalidateRefresh(layerId, entry, 'replay');
+      }
+      this._notifyListeners({ type: 'replay-state', state });
+    });
+    return this._replayUnsubscribe;
+  }
+
+  consumeReplayFrame(frame) {
+    for (const [layerId, entry] of this.layers) {
+      if (!entry.enabled || typeof entry.module.consumeReplayFrame !== 'function') continue;
+      try {
+        entry.module.consumeReplayFrame(frame, this.viewer);
+      } catch (error) {
+        this._notifyListeners({ type: 'replay-frame-error', layerId, error });
+      }
+    }
   }
 
   /**
