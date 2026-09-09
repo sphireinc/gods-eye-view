@@ -39,3 +39,12 @@ Test sparse sequences, gaps, duplicate captures, privacy masks, expired imagery,
 provider outages, date/time zones, and license restrictions. A user should be
 able to compare public street-level views across time without the feature
 pretending that sparse imagery is continuous surveillance.
+
+## Implementation status
+
+Completed on `improvements/24-public-street-time-travel`. Street sequences now
+require HTTPS source pages and retain attribution, license, export permission,
+privacy-mask metadata, valid coordinates, and dated public frames. Comparisons
+remain explicitly discrete and sparse-aware, while a deterministic nearest-date
+selector supports before/after exploration without implying continuous
+surveillance or interpolating people and objects.
