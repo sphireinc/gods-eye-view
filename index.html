@@ -911,6 +911,33 @@
 
   <!-- Intelligence HUD Overlay -->
   <div id="intel-hud"></div>
+  <button id="correlation-launcher" type="button" aria-controls="correlation-board">CORRELATION BOARD</button>
+
+  <aside id="correlation-board" class="correlation-board" hidden aria-label="Public observation correlation board">
+    <div class="correlation-board-header">
+      <div>
+        <span class="correlation-kicker">PUBLIC OBSERVATORY</span>
+        <h2>Correlation workspace</h2>
+      </div>
+      <button type="button" data-correlation-close aria-label="Close correlation workspace">×</button>
+    </div>
+    <p class="correlation-disclaimer">Groups co-occurring public signals. It does not identify people, infer intent, or prove causation.</p>
+    <label>Title <input data-correlation-title value="Untitled public observation workspace" /></label>
+    <div class="correlation-actions">
+      <button type="button" data-correlation-group>GROUP CAPTURED SIGNALS</button>
+      <button type="button" data-correlation-save>SAVE LOCAL</button>
+    </div>
+    <label>Notes <textarea data-correlation-notes rows="2" placeholder="Record a neutral question or limitation"></textarea></label>
+    <h3>Evidence</h3>
+    <ul data-correlation-evidence></ul>
+    <h3>Explainable matches</h3>
+    <ul data-correlation-events></ul>
+    <div class="correlation-actions">
+      <button type="button" data-correlation-json>EXPORT JSON</button>
+      <button type="button" data-correlation-markdown>EXPORT MARKDOWN</button>
+    </div>
+    <p data-correlation-status role="status" aria-live="polite"></p>
+  </aside>
 
   <section id="time-rail" aria-label="Observation replay" data-mode="LIVE">
     <span class="time-rail-label">TIME MACHINE</span>

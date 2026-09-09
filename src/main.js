@@ -33,12 +33,24 @@ import {
 } from './renderGovernor.js';
 import { SceneDirector } from './scenes/director.js';
 import { installScopeMask } from './scopeMask.js';
+<<<<<<< HEAD
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
 import { initTimeRail } from './time/timeRail.js';
+import { initCorrelationBoard } from './correlation/correlationBoard.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
+initCorrelationBoard();
+=======
+import { initFirstRunExperience } from './firstRunExperience.js';
+import { initKeySetup } from './keySetup.js';
+import { loadPhotorealisticTileset } from './mapStartup.js';
+import { initCorrelationBoard } from './correlation/correlationBoard.js';
+
+initLogoGaze();
+initCorrelationBoard();
+>>>>>>> d637e02 (Complete explainable public event correlation)
 
 /**
  * Extract a human-readable error message from any thrown value.

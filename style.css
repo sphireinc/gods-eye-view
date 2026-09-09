@@ -9520,6 +9520,7 @@ body.scene-playback-mode #key-setup {
   border-color: rgba(255, 170, 150, 0.65);
   outline: none;
 }
+<<<<<<< HEAD
 #time-rail {
   position: fixed;
   left: 50%;
@@ -9547,3 +9548,47 @@ body.scene-playback-mode #key-setup {
   #time-rail { max-width: calc(100vw - 18px); overflow-x: auto; justify-content: flex-start; }
   #time-rail input[type='range'] { width: 28vw; min-width: 130px; }
 }
+
+ #correlation-launcher {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 179;
+  border: 1px solid rgba(95, 210, 220, .52);
+  background: rgba(5, 13, 22, .88);
+  color: #bfeef3;
+  padding: 7px 10px;
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+.correlation-board {
+  position: fixed;
+  top: 86px;
+  right: 18px;
+  z-index: 181;
+  width: min(420px, calc(100vw - 36px));
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid rgba(95, 210, 220, .5);
+  background: rgba(5, 13, 22, .96);
+  color: #c6f2f4;
+  font: 11px/1.4 'JetBrains Mono', monospace;
+  box-shadow: 0 0 30px rgba(0, 180, 210, .2);
+}
+.correlation-board[hidden] { display: none; }
+.correlation-board-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.correlation-board-header h2 { margin: 2px 0 8px; font: 16px 'JetBrains Mono', monospace; }
+.correlation-board-header button { border: 0; background: none; color: inherit; font-size: 22px; cursor: pointer; }
+.correlation-kicker { color: #55d9df; font-size: 9px; letter-spacing: .14em; }
+.correlation-disclaimer { color: rgba(198, 242, 244, .7); font-size: 10px; }
+.correlation-board label { display: grid; gap: 4px; margin: 8px 0; color: rgba(198, 242, 244, .75); }
+.correlation-board input,
+.correlation-board textarea { width: 100%; box-sizing: border-box; border: 1px solid rgba(95, 210, 220, .35); background: rgba(0, 20, 30, .72); color: #e7ffff; padding: 6px; font: inherit; }
+.correlation-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.correlation-actions button { border: 1px solid rgba(95, 210, 220, .45); background: transparent; color: inherit; padding: 6px 8px; font: 9px 'JetBrains Mono', monospace; cursor: pointer; }
+.correlation-board h3 { margin: 12px 0 4px; color: #ffd166; font-size: 10px; letter-spacing: .1em; }
+.correlation-board ul { margin: 0; padding-left: 18px; color: rgba(231, 255, 255, .82); }
+.correlation-board li { margin: 4px 0; overflow-wrap: anywhere; }
+ .correlation-board [data-correlation-status] { color: #55d9df; font-size: 10px; }
