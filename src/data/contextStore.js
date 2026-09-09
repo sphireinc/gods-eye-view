@@ -1,3 +1,5 @@
+import { recordContextObservation } from '../observations/contextBridge.js';
+
 const STORE_KEY = '__gevContextStore';
 
 function createStore() {
@@ -38,6 +40,7 @@ export function registerEntityContext(entity, metadata) {
   };
   entity.__gevContextId = metadata.id;
   store.entities.set(metadata.id, record);
+  recordContextObservation(record);
   return record;
 }
 

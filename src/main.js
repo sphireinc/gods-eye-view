@@ -34,6 +34,7 @@ import { installScopeMask } from './scopeMask.js';
 import { initFirstRunExperience } from './firstRunExperience.js';
 import { initKeySetup } from './keySetup.js';
 import { loadPhotorealisticTileset } from './mapStartup.js';
+import { initObservationLedger } from './observations/contextBridge.js';
 
 initLogoGaze();
 
@@ -73,6 +74,7 @@ async function init() {
   const loaderStatus = loadingScreen.querySelector('.loader-status');
 
   try {
+    await initObservationLedger();
     loaderStatus.textContent = 'Configuring viewer...';
 
     // A direct Google key provides Google 3D plus GEV place search. Cesium ion
