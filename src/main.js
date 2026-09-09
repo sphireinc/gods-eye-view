@@ -47,6 +47,9 @@ const timeController = initTimeRail();
 initCorrelationBoard();
 initSnapshotPanel();
 const alertPanel = initAlertPanel();
+import { initCctvCoveragePanel } from './cctv/coveragePanel.js';
+
+initCctvCoveragePanel();
 
 /**
  * Extract a human-readable error message from any thrown value.

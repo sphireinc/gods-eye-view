@@ -10823,3 +10823,37 @@ body.scene-playback-mode #key-setup {
 #alerts-panel ul { padding-left: 17px; }
 #alerts-panel li { margin: 4px 0; overflow-wrap: anywhere; }
 #alerts-panel [data-alert-status] { color: #55d9df; }
+#cctv-coverage-launcher {
+  position: fixed;
+  right: 18px;
+  bottom: 84px;
+  z-index: 179;
+  border: 1px solid rgba(95, 210, 220, .52);
+  background: rgba(5, 13, 22, .88);
+  color: #bfeef3;
+  padding: 7px 10px;
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+#cctv-coverage-panel {
+  position: fixed;
+  top: 86px;
+  right: 18px;
+  z-index: 181;
+  width: min(400px, calc(100vw - 36px));
+  max-height: 58vh;
+  overflow: auto;
+  padding: 13px;
+  border: 1px solid rgba(95, 210, 220, .5);
+  background: rgba(5, 13, 22, .96);
+  color: #c6f2f4;
+  font: 10px/1.4 'JetBrains Mono', monospace;
+  box-shadow: 0 0 25px rgba(0, 180, 210, .18);
+}
+#cctv-coverage-panel[hidden] { display: none; }
+#cctv-coverage-panel > button:first-child { float: right; border: 0; background: none; color: inherit; font-size: 20px; cursor: pointer; }
+#cctv-coverage-panel h2 { margin: 0 0 8px; color: #55d9df; font-size: 14px; }
+#cctv-coverage-panel li { margin: 5px 0; }
+#cctv-coverage-panel li button { border: 1px solid rgba(95, 210, 220, .36); background: transparent; color: inherit; padding: 6px; font: inherit; text-align: left; cursor: pointer; }
+#cctv-coverage-panel [data-cctv-coverage-status] { color: #ffd166; }
