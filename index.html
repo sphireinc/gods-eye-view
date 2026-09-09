@@ -912,6 +912,27 @@
   <!-- Intelligence HUD Overlay -->
   <div id="intel-hud"></div>
 
+  <section id="time-rail" aria-label="Observation replay" data-mode="LIVE">
+    <span class="time-rail-label">TIME MACHINE</span>
+    <span data-time-status>LIVE · NO RECORDING LOADED</span>
+    <input data-time-range type="range" min="0" max="1" value="0" disabled aria-label="Replay playhead" />
+    <button data-time-play type="button" disabled>PLAY</button>
+    <select data-time-rate aria-label="Replay speed" disabled>
+      <option value="0.25">0.25×</option>
+      <option value="0.5">0.5×</option>
+      <option value="1" selected>1×</option>
+      <option value="2">2×</option>
+      <option value="4">4×</option>
+      <option value="8">8×</option>
+    </select>
+    <button data-time-load type="button">LOAD SNAPSHOT</button>
+    <button data-time-record type="button">RECORD</button>
+    <button data-time-export type="button" disabled>EXPORT</button>
+    <button data-time-share type="button" disabled>COPY LINK</button>
+    <button data-time-live type="button">LIVE</button>
+    <input data-time-file type="file" accept="application/json,.json" hidden />
+  </section>
+
   <!-- Loading screen -->
   <div id="loading-screen">
     <div class="loader-content">

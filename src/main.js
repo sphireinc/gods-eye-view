@@ -35,8 +35,10 @@ import { SceneDirector } from './scenes/director.js';
 import { installScopeMask } from './scopeMask.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
+import { initTimeRail } from './time/timeRail.js';
 
 initLogoGaze();
+const timeController = initTimeRail();
 
 /**
  * Extract a human-readable error message from any thrown value.
@@ -209,6 +211,10 @@ async function init() {
       allowQaRegistration: import.meta.env.DEV,
     });
     dataManager.setObservationSink(recordLayerObservation);
+    if (timeController) {
+      dataManager.attachReplayController(timeController);
+      window.addEventListener('gev:replay-frame', (event) => dataManager.consumeReplayFrame(event.detail));
+    }
     dataManager.register(flightsLayer);
     dataManager.register(militaryFlightsLayer);
     dataManager.register(earthquakesLayer);
