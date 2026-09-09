@@ -16,3 +16,8 @@ test('includes comparison caveats for granularity and causation', () => {
   const comparison = compareRegions([], []);
   assert.match(comparison.caveats.join(' '), /causation/i);
 });
+
+test('keeps unit, time basis, and unequal-coverage caveats attached to metrics', () => {
+  const comparison = compareRegions([{ regionId: 'x', indicators: { air: { value: 2, normalized: true } } }], [{ id: 'air', unit: 'ug/m3', timeBasis: 'hourly' }]);
+  assert.equal(comparison.indicators[0].unit, 'ug/m3'); assert.equal(comparison.indicators[0].timeBasis, 'hourly'); assert.match(comparison.caveats.join(' '), /normalized/);
+});
