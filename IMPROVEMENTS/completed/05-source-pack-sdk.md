@@ -57,3 +57,20 @@ A contributor can generate, implement, test, and locally install a public-data
 pack using documented interfaces. The pack appears with attribution and health
 state, can be disabled cleanly, and cannot expand the app's network or secret
 access beyond what its reviewed manifest declares.
+
+## Implemented surfaces
+
+- `src/sources/sourcePackSdk.js` defines the schema, stable-slug validation,
+  capability and permission allowlists, attribution/license requirements,
+  replay policy, network destination allowlist, resource-cost declaration,
+  client/server key declarations, lifecycle validation, and local-only module
+  loading.
+- `DataLayerManager.registerSourcePack()` provides the reviewed layer handoff
+  after the core registry is sealed; pack layers remain ordinary lifecycle
+  participants and can be disabled cleanly.
+- `createSourcePackHarness()` supplies a deterministic clock, fetch seam,
+  fake Cesium collections, call capture, and failure injection.
+- `generateSourcePackSkeleton()` returns a manifest, lifecycle layer, test, and
+  `DATA_SOURCES.md` fragment for a new contributor pack.
+- Remote module paths are explicitly rejected, and malformed packs are returned
+  as precise loader errors rather than installed as empty layers.

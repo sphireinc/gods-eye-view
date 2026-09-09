@@ -136,6 +136,7 @@ export class DataLayerManager {
     this._replayLayerStatus = new Map();
     this._sceneBudgetPlanner = null;
     this._sceneBudgetAllocation = null;
+    this._sourcePackIds = new Set();
   }
 
   register(layerModule) {
@@ -158,6 +159,19 @@ export class DataLayerManager {
     this._registerLayer(layerModule);
     this._qaLayerIds.add(layerModule.id);
     return layerModule.id;
+  }
+
+  /** Install a reviewed local source-pack layer after the core registry is sealed. */
+  registerSourcePack(packEntry) {
+    if (!packEntry?.manifest || !packEntry.layer) throw new TypeError('source pack must include a manifest and layer');
+    this._registerLayer({
+      ...packEntry.layer,
+      sourcePackId: packEntry.manifest.id,
+      source: packEntry.manifest.provider,
+      attribution: packEntry.manifest.attributionUrl,
+    });
+    this._sourcePackIds.add(packEntry.manifest.id);
+    return packEntry.manifest.id;
   }
 
   /** Destroy a layer previously registered through the dev QA seam. */
