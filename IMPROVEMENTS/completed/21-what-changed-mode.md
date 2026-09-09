@@ -55,3 +55,12 @@ Test clock boundaries, stale records, out-of-order observations, antimeridian
 geometry, duplicate events, sparse sampling, source outages, and provider
 revisions. A user should be able to open a place, select two periods, see a
 ranked and explainable list of changes, and trace every result to its sources.
+
+## Implementation status
+
+Completed on `improvements/21-what-changed-mode`. Added a deterministic change
+detector covering new, removed, numeric increase/decrease, source transitions,
+and category reclassification. Results include before/after values, deltas,
+stable ordering, and plain-language explanations; summaries retain explicit
+absence caveats so missing observations are not presented as proof of no
+change.
