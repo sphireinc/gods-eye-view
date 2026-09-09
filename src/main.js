@@ -2,6 +2,7 @@ import * as Cesium from 'cesium';
 import { initAnnotations } from './annotations/index.js';
 import { flyToAustin } from './camera.js';
 import { initCockpitCloudEffects } from './cockpitCloudEffects.js';
+import { initCorrelationBoard } from './correlation/correlationBoard.js';
 import aisLiveVesselsLayer from './data/aisLiveVessels.js';
 import bikeshareLayer from './data/bikeshare.js';
 import cctvLayer from './data/cctv.js';
@@ -33,12 +34,13 @@ import {
 } from './renderGovernor.js';
 import { SceneDirector } from './scenes/director.js';
 import { installScopeMask } from './scopeMask.js';
+import { initTimeRail } from './time/timeRail.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
-import { initTimeRail } from './time/timeRail.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
+initCorrelationBoard();
 
 /**
  * Extract a human-readable error message from any thrown value.
@@ -213,7 +215,9 @@ async function init() {
     dataManager.setObservationSink(recordLayerObservation);
     if (timeController) {
       dataManager.attachReplayController(timeController);
-      window.addEventListener('gev:replay-frame', (event) => dataManager.consumeReplayFrame(event.detail));
+      window.addEventListener('gev:replay-frame', (event) =>
+        dataManager.consumeReplayFrame(event.detail),
+      );
     }
     dataManager.register(flightsLayer);
     dataManager.register(militaryFlightsLayer);
