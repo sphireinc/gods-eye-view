@@ -40,3 +40,13 @@ Test category licensing, stale schedules, duplicate OSM entities, global LOD,
 accessibility labels, and interactions with conflict and humanitarian modes. A
 user should be able to explore a place through ordinary civic context without
 the map becoming a dense unreadable inventory.
+
+## Implementation status
+
+Completed on `improvements/23-everyday-world-context`. The continuity core now
+validates civic categories and coordinate bounds, accepts only HTTPS source
+links, normalizes explicit static/scheduled/observed/inferred/stale/unknown
+states, excludes sensitive records before normalization, deduplicates public
+entities, and clusters them into bounded global context nodes. Its preset
+caveat explicitly prevents interpreting civic places as attendance or
+individual movement.
