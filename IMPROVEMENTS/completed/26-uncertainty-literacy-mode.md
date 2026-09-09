@@ -42,3 +42,12 @@ explanations with expandable detail.
 Test every visible source-state label for a plain-language explanation, reduced
 motion, translation fallback, and no color-only meaning. A first-time user
 should understand why an empty layer does not automatically mean an empty world.
+
+## Implementation status
+
+Completed on `improvements/26-uncertainty-literacy-mode`. The literacy model
+now explains observed, modeled, inferred, stale, unknown, unavailable,
+forecast, source-outage, repeated-reporting, and spatial-precision states in
+plain language. It validates optional timestamps before displaying them and
+includes synthetic lessons demonstrating why provider silence must remain
+`UNKNOWN` and why repeated articles are not independent corroboration.
