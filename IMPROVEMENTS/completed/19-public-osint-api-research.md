@@ -406,3 +406,13 @@ came from, and see the uncertainty instead of hiding it.**
 25. [Wikidata SPARQL service](https://www.wikidata.org/wiki/Help%3AQueries)
 26. [OpenAlex API](https://help.openalex.org/api/)
 27. [Crossref REST API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/)
+
+## Implementation status
+
+Completed on `improvements/19-public-osint-api-research`. The public API
+registry now catalogs natural events, Earth observation, atmosphere, ocean,
+water, connectivity, news, humanitarian, and infrastructure sources with
+access, authentication, cadence, redistribution, and safety metadata. New
+entries include Copernicus Marine, USGS Water, NWS, RIPEstat, Global Energy
+Monitor, GBIF, and OpenAlex. Custom integrations require HTTPS documentation,
+explicit safety/redistribution metadata, and typed capability labels.

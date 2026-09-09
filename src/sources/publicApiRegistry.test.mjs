@@ -12,3 +12,9 @@ test('catalogs public APIs with safety and redistribution metadata', () => {
 test('rejects an API source without a supported safety domain', () => {
   assert.throws(() => validatePublicApiSource({ id: 'scanner', name: 'Scanner', domain: 'unknown', safety: 'none', redistribution: 'none' }), /supported domain/);
 });
+
+test('requires source documentation to be HTTPS and preserves capability labels', () => {
+  assert.throws(() => validatePublicApiSource({ id: 'safe', name: 'Safe', domain: 'news', safety: 'context', redistribution: 'review' }), /HTTPS/);
+  const source = validatePublicApiSource({ id: 'safe', name: 'Safe', domain: 'news', safety: 'context', redistribution: 'review', documentationUrl: 'https://example.org/docs', capabilities: ['events'] });
+  assert.deepEqual(source.capabilities, ['events']);
+});
