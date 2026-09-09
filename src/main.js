@@ -40,11 +40,13 @@ import { createSourcePackRegistry, loadLocalSourcePacks } from './sources/source
 import { initTimeRail } from './time/timeRail.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
+import { initAlertPanel } from './alerts/alertPanel.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
 initCorrelationBoard();
 initSnapshotPanel();
+const alertPanel = initAlertPanel();
 
 /**
  * Extract a human-readable error message from any thrown value.
@@ -223,6 +225,7 @@ async function init() {
         dataManager.consumeReplayFrame(event.detail),
       );
     }
+    if (alertPanel) dataManager.attachAlertEngine(alertPanel);
     dataManager.register(flightsLayer);
     dataManager.register(militaryFlightsLayer);
     dataManager.register(earthquakesLayer);

@@ -62,6 +62,14 @@
 
   <!-- Toast notification -->
   <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <button id="alerts-launcher" type="button" aria-controls="alerts-panel">ALERTS</button>
+  <aside id="alerts-panel" hidden aria-label="Public observation alerts">
+    <button type="button" data-alert-close aria-label="Close alerts">×</button>
+    <h2>Public alerts</h2>
+    <p>Local rules observe public entities and source health. They never target people or treat missing data as an exit.</p>
+    <ul data-alert-history></ul>
+    <p data-alert-status role="status" aria-live="polite"></p>
+  </aside>
 
   <!-- Safe frame guides for recording composition -->
   <div id="safe-frame-overlay">
