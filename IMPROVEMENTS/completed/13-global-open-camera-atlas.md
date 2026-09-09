@@ -71,3 +71,13 @@ Users can browse public cameras across multiple continents from the globe,
 open the operator's source page, see honest freshness and projection status,
 and understand why a feed is unavailable. No camera is accepted solely because
 someone pasted a URL into a text box.
+
+## Implementation status
+
+Completed on `improvements/13-global-open-camera-atlas`. Added a versioned,
+review-oriented camera catalog validator with operator, source-page, protocol,
+privacy-class, coordinate, and projection checks. The atlas core filters
+catalog records by viewport/type/availability, handles antimeridian bounds,
+retains unavailable records, and clusters cameras into bounded global nodes for
+low-zoom rendering. Direct feed brokering remains intentionally separate from
+catalog admission so a URL alone cannot become an accepted camera source.
