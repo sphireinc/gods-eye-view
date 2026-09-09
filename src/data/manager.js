@@ -133,6 +133,7 @@ export class DataLayerManager {
     this._observationSink = null;
     this._replayState = null;
     this._replayUnsubscribe = null;
+    this._replayLayerStatus = new Map();
   }
 
   register(layerModule) {
@@ -284,6 +285,7 @@ export class DataLayerManager {
       loading: lifecycleLoading || moduleStats.loading === true,
       refreshing: entry.refreshing || moduleStats.refreshing === true,
       managerRefreshError: entry.managerRefreshError,
+      replay: this._replayLayerStatus.get(entry.module.id) || null,
     };
   }
 
@@ -2021,19 +2023,43 @@ export class DataLayerManager {
     this._replayUnsubscribe = controller.subscribe((state) => {
       this._replayState = state;
       if (state.mode === 'REPLAY') {
-        for (const [layerId, entry] of this.layers) this._invalidateRefresh(layerId, entry, 'replay');
+        for (const [layerId, entry] of this.layers) {
+          this._invalidateRefresh(layerId, entry, 'replay');
+          this._replayLayerStatus.set(layerId, entry.module.replayPolicy === 'static'
+            ? { state: 'STATIC', reason: 'BUNDLED_STATIC_LAYER' }
+            : { state: 'UNAVAILABLE', reason: 'LAYER_HAS_NO_REPLAY_ADAPTER' });
+        }
+      } else {
+        this._replayLayerStatus.clear();
       }
       this._notifyListeners({ type: 'replay-state', state });
+      this._refreshTogglePanel();
     });
     return this._replayUnsubscribe;
   }
 
   consumeReplayFrame(frame) {
     for (const [layerId, entry] of this.layers) {
-      if (!entry.enabled || typeof entry.module.consumeReplayFrame !== 'function') continue;
+      if (!entry.enabled) continue;
+      if (typeof entry.module.consumeReplayFrame !== 'function') {
+        if (entry.module.replayPolicy !== 'static') {
+          this._replayLayerStatus.set(layerId, {
+            state: 'UNAVAILABLE',
+            reason: 'NO_NORMALIZED_RECORDS_AT_PLAYHEAD',
+          });
+          this._notifyListeners({ type: 'replay-layer', layerId, status: this._replayLayerStatus.get(layerId) });
+        }
+        continue;
+      }
       try {
-        entry.module.consumeReplayFrame(frame, this.viewer);
+        const result = entry.module.consumeReplayFrame(frame, this.viewer);
+        this._replayLayerStatus.set(layerId, {
+          state: result?.state || 'AVAILABLE',
+          reason: result?.reason || null,
+        });
+        this._notifyListeners({ type: 'replay-layer', layerId, status: this._replayLayerStatus.get(layerId) });
       } catch (error) {
+        this._replayLayerStatus.set(layerId, { state: 'UNAVAILABLE', reason: 'REPLAY_ADAPTER_ERROR' });
         this._notifyListeners({ type: 'replay-frame-error', layerId, error });
       }
     }

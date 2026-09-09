@@ -3098,3 +3098,36 @@ test('a layer that surrenders its row controls hides the block entirely', async 
     else globalThis.document = originalDocument;
   }
 });
+
+test('replay suspends live refresh and exposes honest layer availability', async () => {
+  const manager = new DataLayerManager({});
+  let replayFrames = 0;
+  manager.register({
+    id: 'replayable', name: 'Replayable', icon: '', source: 'test', updateInterval: -1,
+    async init() {}, enable() {}, disable() {}, async update() {},
+    consumeReplayFrame() { replayFrames += 1; return { state: 'OBSERVED' }; },
+    getStats() { return {}; },
+  });
+  manager.register({
+    id: 'live-only', name: 'Live only', icon: '', source: 'test', updateInterval: -1,
+    async init() {}, enable() {}, disable() {}, async update() {},
+    getStats() { return {}; },
+  });
+  let listener;
+  manager.attachReplayController({
+    subscribe(callback) { listener = callback; callback({ mode: 'LIVE' }); return () => {}; },
+  });
+  await manager.setEnabled('replayable', true);
+  await manager.setEnabled('live-only', true);
+  listener({ mode: 'REPLAY' });
+  const initial = new Map(manager.getAll().map(({ id, stats }) => [id, stats.replay?.state]));
+  assert.equal(initial.get('replayable'), 'UNAVAILABLE');
+  assert.equal(initial.get('live-only'), 'UNAVAILABLE');
+  manager.consumeReplayFrame({ records: [] });
+  assert.equal(replayFrames, 1);
+  assert.equal(manager.getAll().find(({ id }) => id === 'replayable').stats.replay.state, 'OBSERVED');
+  assert.equal(manager.getAll().find(({ id }) => id === 'live-only').stats.replay.state, 'UNAVAILABLE');
+  listener({ mode: 'LIVE' });
+  assert.equal(manager.getAll().find(({ id }) => id === 'live-only').stats.replay, null);
+  await manager.destroyAll();
+});

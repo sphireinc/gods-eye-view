@@ -60,3 +60,20 @@ observed/interpolated/unavailable states, and return to a fresh live session
 without reloading the page. A replay can be run twice from the same export and
 produce the same entity positions, layer statuses, camera events, and screenshot
 timestamps.
+
+## Implemented surfaces
+
+- `src/time/timeController.js` provides the versioned clock, bounded playhead,
+  playback rates, reverse seeking, deterministic cursors, honest
+  `OBSERVED`/`INTERPOLATED`/`UNAVAILABLE` states, and bounded observation
+  recording.
+- `src/time/replaySession.js` consumes only `formatVersion: 1` archives,
+  disables network-backed replay frames, emits deterministic UTC screenshot
+  timestamps, and cancels all subscribers when a session closes.
+- `src/data/manager.js` invalidates live refresh work on replay entry and
+  publishes per-layer `STATIC`, `AVAILABLE`, or `UNAVAILABLE` replay status.
+- `src/time/timeRail.js` exposes load, scrub, play/pause, speed, record, export,
+  and return-to-live controls. The camera is not moved by replay controls.
+- `src/time/timeShare.js` encodes only a versioned recording identifier and a
+  bounded UTC window/playhead; it does not claim that an arbitrary URL contains
+  historical data.
