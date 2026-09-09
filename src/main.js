@@ -25,6 +25,8 @@ import { initLogoGaze } from './logoGaze.js';
 import { MapStackController } from './mapStackController.js';
 import { loadPhotorealisticTileset } from './mapStartup.js';
 import { initObservationLedger, recordLayerObservation } from './observations/contextBridge.js';
+import { initSnapshotPanel } from './offline/snapshotPanel.js';
+import { createSceneBudgetPlanner } from './performance/sceneBudget.js';
 import {
   getRenderGovernorDiagnostics,
   governorRequestRender,
@@ -34,15 +36,15 @@ import {
 } from './renderGovernor.js';
 import { SceneDirector } from './scenes/director.js';
 import { installScopeMask } from './scopeMask.js';
+import { createSourcePackRegistry, loadLocalSourcePacks } from './sources/sourcePackSdk.js';
 import { initTimeRail } from './time/timeRail.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
-import { createSceneBudgetPlanner } from './performance/sceneBudget.js';
-import { createSourcePackRegistry, loadLocalSourcePacks } from './sources/sourcePackSdk.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
 initCorrelationBoard();
+initSnapshotPanel();
 
 /**
  * Extract a human-readable error message from any thrown value.
@@ -249,11 +251,13 @@ async function init() {
     const renderBudget = (allocation) => {
       if (!allocation || !budgetSummary || !budgetLayers) return;
       budgetSummary.textContent = `${allocation.averageCpuMs.toFixed(1)} ms CPU · ${allocation.availableUnits} units available · ${allocation.qualityLock ? 'QUALITY LOCK' : 'ADAPTIVE'}`;
-      budgetLayers.replaceChildren(...Object.values(allocation.allocations).map((item) => {
-        const row = document.createElement('li');
-        row.textContent = `${item.layerId}: ${item.step} · ${item.visibleCount} visible · ${item.reason}`;
-        return row;
-      }));
+      budgetLayers.replaceChildren(
+        ...Object.values(allocation.allocations).map((item) => {
+          const row = document.createElement('li');
+          row.textContent = `${item.layerId}: ${item.step} · ${item.visibleCount} visible · ${item.reason}`;
+          return row;
+        }),
+      );
     };
     renderBudget(dataManager.getSceneBudget());
     dataManager.subscribe((event) => {
