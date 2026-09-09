@@ -959,6 +959,14 @@
     <button data-time-live type="button">LIVE</button>
     <input data-time-file type="file" accept="application/json,.json" hidden />
   </section>
+  <button id="scene-budget-launcher" type="button" aria-controls="scene-budget-diagnostics">SCENE BUDGET</button>
+  <aside id="scene-budget-diagnostics" class="scene-budget-diagnostics" hidden aria-label="Scene budget diagnostics">
+    <button type="button" data-budget-close aria-label="Close scene budget diagnostics">×</button>
+    <h2>Scene budget</h2>
+    <p data-budget-summary>Waiting for allocation…</p>
+    <ul data-budget-layers></ul>
+    <p class="scene-budget-note">Allocations request decluttering; they never disable a selected source or claim data is absent.</p>
+  </aside>
 
   <!-- Loading screen -->
   <div id="loading-screen">

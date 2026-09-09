@@ -134,6 +134,8 @@ export class DataLayerManager {
     this._replayState = null;
     this._replayUnsubscribe = null;
     this._replayLayerStatus = new Map();
+    this._sceneBudgetPlanner = null;
+    this._sceneBudgetAllocation = null;
   }
 
   register(layerModule) {
@@ -2002,6 +2004,40 @@ export class DataLayerManager {
       });
     }
     return result;
+  }
+
+  /** Attach a global planner without giving it authority to disable layers. */
+  attachSceneBudgetPlanner(planner) {
+    this._sceneBudgetPlanner = planner?.plan ? planner : null;
+    return this.updateSceneBudget();
+  }
+
+  sampleSceneFrame(sample) {
+    const result = this._sceneBudgetPlanner?.sampleFrame?.(sample) || null;
+    if (result) this.updateSceneBudget();
+    return result;
+  }
+
+  updateSceneBudget(context = {}) {
+    if (!this._sceneBudgetPlanner) return null;
+    const layers = [...this.layers].map(([id, entry]) => ({
+      id,
+      budgetDescriptor: entry.module.budgetDescriptor,
+      count: Number(this._normalizedStats(entry).count) || 0,
+    }));
+    this._sceneBudgetAllocation = this._sceneBudgetPlanner.plan(layers, context);
+    for (const [layerId, allocation] of Object.entries(this._sceneBudgetAllocation.allocations)) {
+      const entry = this.layers.get(layerId);
+      if (typeof entry?.module.applySceneBudget === 'function') {
+        entry.module.applySceneBudget(allocation, this.viewer);
+      }
+    }
+    this._notifyListeners({ type: 'scene-budget', allocation: this._sceneBudgetAllocation });
+    return this._sceneBudgetAllocation;
+  }
+
+  getSceneBudget() {
+    return this._sceneBudgetAllocation;
   }
 
   subscribe(callback) {
