@@ -44,3 +44,12 @@ Test sparse regions, source outages, global wraparound, stale caches, unequal
 cell sizes, and transitions between coverage levels. A user should be able to
 look at any quiet area and immediately understand whether it is quiet or simply
 poorly observed.
+
+## Implementation status
+
+Completed on `improvements/29-data-coverage-gaps`. Coverage cells now expose
+separate freshness, source-diversity, and spatial-precision dimensions in
+addition to their inspectable component metadata. Source families are
+deduplicated and bounded, contributor recommendations identify useful gaps,
+and low coverage retains the explicit warning that it does not imply low
+activity, safety, or an empty world.
