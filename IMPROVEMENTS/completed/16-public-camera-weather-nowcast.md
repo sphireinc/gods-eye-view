@@ -51,3 +51,12 @@ shipping real people's images in tests.
 Users can browse broad, source-backed public scene conditions around the world
 and see exactly when and how each condition was determined. The feature never
 claims operational weather certainty and never analyzes people.
+
+## Implementation status
+
+Completed on `improvements/16-camera-weather-nowcast`. Added a conservative
+scene-condition vocabulary and evidence model combining camera metadata,
+nearby public weather, solar position, and frame age. Conflicting evidence is
+reported as `MIXED`, stale frames become `LAST_OBSERVED`, every result carries
+timestamps, source IDs, confidence, method, and a non-operational caveat, and
+no person-level analysis is performed.
