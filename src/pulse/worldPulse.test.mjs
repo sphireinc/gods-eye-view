@@ -8,3 +8,8 @@ test('builds multi-source pulse cards without opaque severity scores', () => {
   assert.equal(pulse.cards[1].state, 'NO_MATCHING_PUBLIC_SIGNAL');
   assert.match(pulseToMarkdown(pulse), /under-observed/i);
 });
+
+test('supports muted categories and calm mode without sensational fallback', () => {
+  const pulse = buildWorldPulse({ regions: [{ regionId: 'a' }], quietMode: true, signals: [{ regionId: 'a', category: 'conflict', state: 'BREAKING' }, { regionId: 'a', category: 'environment', state: 'OBSERVED' }] });
+  assert.equal(pulse.cards[0].signalCount, 1); assert.match(pulseToMarkdown(pulse), /Included because/);
+});
