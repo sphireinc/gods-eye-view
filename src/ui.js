@@ -34,6 +34,7 @@ import {
   setKeyholeFadeTuning,
 } from './celestialRing.js';
 import { destroyTrackedReadout, initTrackedReadout } from './data/trackedReadout.js';
+import { getLatestObservationForContext } from './observations/contextBridge.js';
 import { destroyWorldOverlay, initWorldOverlay } from './overlays/worldOverlay.js';
 import {
   destroyDetection,
@@ -728,6 +729,7 @@ class CockpitViewController {
     this.contextDirection = document.getElementById('cockpit-context-direction');
     this.contextUncertainty = document.getElementById('cockpit-context-uncertainty');
     this.contextUpdated = document.getElementById('cockpit-context-updated');
+    this.contextProvenance = document.getElementById('cockpit-context-provenance');
     this.contextCohorts = new Map(Array.from(document.querySelectorAll('[data-context-cohort]'))
       .map((element) => [element.dataset.contextCohort, element]));
     this.contextPrevious = document.getElementById('cockpit-context-previous');
@@ -818,6 +820,12 @@ class CockpitViewController {
     });
     this._listen(window, 'gev:cockpit-weather-state', (event) => {
       this.syncWeatherToggle(event?.detail?.enabled !== false);
+    });
+    this._listen(window, 'gev:entity-selected', (event) => {
+      this.updateContextProvenance(event.detail);
+    });
+    this._listen(window, 'gev:observation-recorded', (event) => {
+      this.renderContextProvenance(event.detail);
     });
     this._listen(this.signalToggle, 'click', () => this.setSignalCollapsed(
       !this.signalCollapsed,
@@ -1646,6 +1654,25 @@ class CockpitViewController {
       this.contextLayoutStamp = snapshot.evaluatedAt;
       this.scheduleContextLayout();
     }
+  }
+
+  async updateContextProvenance(record) {
+    if (!record) return;
+    const observation = await getLatestObservationForContext(record);
+    if (observation) this.renderContextProvenance(observation);
+    else if (this.contextProvenance) this.contextProvenance.textContent = 'SOURCE UNAVAILABLE · AGE UNKNOWN';
+  }
+
+  renderContextProvenance(observation) {
+    if (!this.contextProvenance || !observation) return;
+    const ageMs = Math.max(0, Date.now() - Date.parse(observation.observedAt));
+    const age = ageMs < 60_000
+      ? `${Math.round(ageMs / 1000)}S`
+      : ageMs < 3_600_000
+        ? `${Math.round(ageMs / 60_000)}M`
+        : `${Math.round(ageMs / 3_600_000)}H`;
+    this.contextProvenance.textContent = `${observation.source.attribution || observation.source.id} · ${observation.status} · AGE ${age}`;
+    this.contextProvenance.title = `Observed ${observation.observedAt}; received ${observation.receivedAt}. Source: ${observation.source.url || 'not supplied'}`;
   }
 
   scheduleContextLayout() {

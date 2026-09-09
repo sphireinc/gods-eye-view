@@ -39,6 +39,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node scripts/run-unit-tests.mjs",
+    "format": "biome format --write",
+    "lint": "biome lint --no-errors-on-unmatched",
+    "lint:staged": "node scripts/biome-staged.mjs",
+    "prepare": "git config core.hooksPath .githooks",
     "test:track": "node scripts/track-regression.mjs",
     "qa:map-source-tray": "node scripts/qa-map-source-tray.mjs"
   },
@@ -51,6 +55,7 @@
     "satellite.js": "^6.0.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.12",
     "puppeteer": "^24.37.5",
     "sharp": "^0.35.4",
     "vite": "^6.0.0",

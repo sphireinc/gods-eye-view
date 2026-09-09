@@ -1,39 +1,40 @@
 import * as Cesium from 'cesium';
-import { StyleManager } from './ui.js';
-import { flyToAustin } from './camera.js';
-import { DataLayerManager } from './data/manager.js';
-import flightsLayer from './data/flights.js';
-import militaryFlightsLayer from './data/militaryFlights.js';
-import earthquakesLayer from './data/earthquakes.js';
-import satellitesLayer from './data/satellites.js';
-import rocketLaunchesLayer from './data/rocketLaunches.js';
-import trafficLayer from './data/traffic.js';
-import cctvLayer from './data/cctv.js';
-import radioLayer from './data/radio.js';
-import bikeshareLayer from './data/bikeshare.js';
-import aisLiveVesselsLayer from './data/aisLiveVessels.js';
-import militaryInstallationsLayer from './data/militaryInstallations.js';
-import militaryAwarenessLayer from './data/militaryAwareness.js';
-import localDataLayers from './data/localLayers.js';
-import { LAYER_STATE_REGISTRY } from './data/layerState.js';
-import { registerDataCredits } from './data/dataCredits.js';
-import { SceneDirector } from './scenes/director.js';
-import { initGevVoiceCommands } from './voice/gevRealtime.js';
-import { MapStackController } from './mapStackController.js';
 import { initAnnotations } from './annotations/index.js';
-import { initLogoGaze } from './logoGaze.js';
+import { flyToAustin } from './camera.js';
 import { initCockpitCloudEffects } from './cockpitCloudEffects.js';
+import aisLiveVesselsLayer from './data/aisLiveVessels.js';
+import bikeshareLayer from './data/bikeshare.js';
+import cctvLayer from './data/cctv.js';
+import { registerDataCredits } from './data/dataCredits.js';
+import earthquakesLayer from './data/earthquakes.js';
+import flightsLayer from './data/flights.js';
+import { LAYER_STATE_REGISTRY } from './data/layerState.js';
+import localDataLayers from './data/localLayers.js';
+import { DataLayerManager } from './data/manager.js';
+import militaryAwarenessLayer from './data/militaryAwareness.js';
+import militaryFlightsLayer from './data/militaryFlights.js';
+import militaryInstallationsLayer from './data/militaryInstallations.js';
+import radioLayer from './data/radio.js';
+import rocketLaunchesLayer from './data/rocketLaunches.js';
+import satellitesLayer from './data/satellites.js';
+import trafficLayer from './data/traffic.js';
+import { initFirstRunExperience } from './firstRunExperience.js';
+import { initKeySetup } from './keySetup.js';
+import { initLogoGaze } from './logoGaze.js';
+import { MapStackController } from './mapStackController.js';
+import { loadPhotorealisticTileset } from './mapStartup.js';
+import { initObservationLedger, recordLayerObservation } from './observations/contextBridge.js';
 import {
-  installRenderGovernor,
   getRenderGovernorDiagnostics,
   governorRequestRender,
   holdContinuousRender,
+  installRenderGovernor,
   releaseContinuousRender,
 } from './renderGovernor.js';
+import { SceneDirector } from './scenes/director.js';
 import { installScopeMask } from './scopeMask.js';
-import { initFirstRunExperience } from './firstRunExperience.js';
-import { initKeySetup } from './keySetup.js';
-import { loadPhotorealisticTileset } from './mapStartup.js';
+import { StyleManager } from './ui.js';
+import { initGevVoiceCommands } from './voice/gevRealtime.js';
 
 initLogoGaze();
 
@@ -73,6 +74,7 @@ async function init() {
   const loaderStatus = loadingScreen.querySelector('.loader-status');
 
   try {
+    await initObservationLedger();
     loaderStatus.textContent = 'Configuring viewer...';
 
     // A direct Google key provides Google 3D plus GEV place search. Cesium ion
@@ -145,9 +147,8 @@ async function init() {
     viewer.scene.skyAtmosphere.saturationShift = -0.12;
     viewer.scene.skyAtmosphere.brightnessShift = -0.08;
 
-    loaderStatus.textContent = googleApiKey || cesiumToken
-      ? 'Loading Google 3D Tiles...'
-      : 'Loading the keyless globe...';
+    loaderStatus.textContent =
+      googleApiKey || cesiumToken ? 'Loading Google 3D Tiles...' : 'Loading the keyless globe...';
     const photoreal = await loadPhotorealisticTileset(Cesium, {
       googleApiKey,
       cesiumToken,
@@ -207,6 +208,7 @@ async function init() {
     const dataManager = new DataLayerManager(viewer, {
       allowQaRegistration: import.meta.env.DEV,
     });
+    dataManager.setObservationSink(recordLayerObservation);
     dataManager.register(flightsLayer);
     dataManager.register(militaryFlightsLayer);
     dataManager.register(earthquakesLayer);
@@ -326,8 +328,13 @@ async function init() {
       getRenderGovernorDiagnostics,
       requestRender: governorRequestRender,
     };
-    window.__godsEyeView.voiceCommands = initGevVoiceCommands({ viewer, styleManager, dataManager, sceneDirector, annotations });
-
+    window.__godsEyeView.voiceCommands = initGevVoiceCommands({
+      viewer,
+      styleManager,
+      dataManager,
+      sceneDirector,
+      annotations,
+    });
   } catch (error) {
     console.error("God's Eye View initialization failed:", error);
     loaderStatus.textContent = `Error: ${describeError(error)}`;
