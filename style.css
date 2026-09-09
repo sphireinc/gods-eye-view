@@ -10788,3 +10788,38 @@ body.scene-playback-mode #key-setup {
 #snapshot-panel h2 { margin: 0 0 8px; color: #55d9df; font-size: 14px; }
 #snapshot-panel button:not(:first-child) { margin: 4px 4px 4px 0; border: 1px solid rgba(95, 210, 220, .45); background: transparent; color: inherit; padding: 6px 8px; font: 9px 'JetBrains Mono', monospace; cursor: pointer; }
 #snapshot-panel [data-snapshot-status] { color: #ffd166; }
+
+#alerts-launcher {
+  position: fixed;
+  left: 18px;
+  bottom: 48px;
+  z-index: 179;
+  border: 1px solid rgba(255, 159, 67, .55);
+  background: rgba(5, 13, 22, .88);
+  color: #ffb45f;
+  padding: 7px 10px;
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+#alerts-panel {
+  position: fixed;
+  left: 18px;
+  bottom: 85px;
+  z-index: 181;
+  width: min(380px, calc(100vw - 36px));
+  max-height: 55vh;
+  overflow: auto;
+  padding: 13px;
+  border: 1px solid rgba(255, 159, 67, .55);
+  background: rgba(5, 13, 22, .96);
+  color: #e6f7f3;
+  font: 10px/1.4 'JetBrains Mono', monospace;
+  box-shadow: 0 0 25px rgba(255, 159, 67, .14);
+}
+#alerts-panel[hidden] { display: none; }
+#alerts-panel > button:first-child { float: right; border: 0; background: none; color: inherit; font-size: 20px; cursor: pointer; }
+#alerts-panel h2 { margin: 0 0 8px; color: #ffb45f; font-size: 14px; }
+#alerts-panel ul { padding-left: 17px; }
+#alerts-panel li { margin: 4px 0; overflow-wrap: anywhere; }
+#alerts-panel [data-alert-status] { color: #55d9df; }

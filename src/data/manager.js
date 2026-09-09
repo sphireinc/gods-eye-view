@@ -137,6 +137,7 @@ export class DataLayerManager {
     this._sceneBudgetPlanner = null;
     this._sceneBudgetAllocation = null;
     this._sourcePackIds = new Set();
+    this._alertEngine = null;
   }
 
   register(layerModule) {
@@ -2052,6 +2053,20 @@ export class DataLayerManager {
 
   getSceneBudget() {
     return this._sceneBudgetAllocation;
+  }
+
+  attachAlertEngine(engine) {
+    this._alertEngine = engine?.evaluate ? engine : null;
+    return this._alertEngine;
+  }
+
+  consumeObservation(record, options = {}) {
+    const events = this._alertEngine?.evaluate(record, options) || [];
+    for (const event of events) {
+      this._notifyListeners({ type: 'alert', event });
+      globalThis.window?.dispatchEvent?.(new CustomEvent('gev:alert', { detail: event }));
+    }
+    return events;
   }
 
   subscribe(callback) {

@@ -49,3 +49,18 @@ test that no alert payload contains provider secrets or hidden raw records.
 Users can create a bounded public-data alert, receive one honest event with
 auditable evidence, survive a reload without duplicates, and understand whether
 silence means “nothing matched” or “the source could not answer.”
+
+## Implemented surfaces
+
+- `src/alerts/rules.js` validates bounded declarative predicates, antimeridian
+  areas, public non-person entity types, restricted fields, cooldowns, and
+  evaluation rates.
+- The engine models `UNKNOWN`, `ABSENT`, and `PRESENT` separately; unavailable
+  sources suspend rules rather than synthesizing exits, and emitted events carry
+  observation IDs plus before/after values.
+- `DataLayerManager.consumeObservation()` is the normalized update seam for
+  alert evaluation, while `src/alerts/alertPanel.js` provides a local in-app
+  history drawer with explicit uncertainty language.
+- IndexedDB state persistence and redaction-safe history APIs are exposed for
+  reload-safe integration; browser notification/webhook delivery remains opt-in
+  and outside the default local-only path.
