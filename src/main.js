@@ -43,6 +43,7 @@ import { initGevVoiceCommands } from './voice/gevRealtime.js';
 import { initAlertPanel } from './alerts/alertPanel.js';
 import { initMissionPanel } from './missions/missionPanel.js';
 import { initProviderHealthPanel } from './data/providerHealthPanel.js';
+import { initSceneAccessibility } from './input/sceneAccessibility.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
@@ -299,6 +300,7 @@ async function init() {
     dataManager.buildTogglePanel(document.getElementById('data-toggles'));
     styleManager.attachDataManager(dataManager);
     initProviderHealthPanel({ manager: dataManager });
+    initSceneAccessibility({ manager: dataManager });
 
     // Initialize deterministic scene playback for social clip capture
     const sceneDirector = new SceneDirector(viewer, styleManager, dataManager);

@@ -15,3 +15,12 @@ test('detects reduced-motion preference without requiring a browser', () => {
   assert.equal(prefersReducedMotion({ matchMedia: () => ({ matches: true }) }), true);
   assert.equal(prefersReducedMotion({ matchMedia: () => ({ matches: false }) }), false);
 });
+
+test('routes gamepad input and ignores handled browser events', () => {
+  const calls = [];
+  const controller = createInputController();
+  controller.register('camera-east', () => calls.push('east'));
+  assert.equal(controller.handleGamepad({ axis: 'x', value: 1 }), true);
+  assert.deepEqual(calls, ['east']);
+  assert.equal(controller.handleKey({ key: 'ArrowUp', defaultPrevented: true }), false);
+});
