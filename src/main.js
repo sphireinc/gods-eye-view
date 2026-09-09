@@ -38,6 +38,7 @@ import { initTimeRail } from './time/timeRail.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
 import { createSceneBudgetPlanner } from './performance/sceneBudget.js';
+import { createSourcePackRegistry, loadLocalSourcePacks } from './sources/sourcePackSdk.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
@@ -264,6 +265,13 @@ async function init() {
     budgetPanel?.querySelector('[data-budget-close]')?.addEventListener('click', () => {
       budgetPanel.hidden = true;
     });
+    const sourcePackRegistry = createSourcePackRegistry();
+    const localPackModules = import.meta.glob('./sources/packs/*/index.js', { eager: true });
+    const sourcePackResults = loadLocalSourcePacks(sourcePackRegistry, localPackModules);
+    for (const result of sourcePackResults) {
+      if (result.ok && result.pack.layer) dataManager.registerSourcePack(result.pack);
+    }
+    window.__GEV_SOURCE_PACKS__ = { registry: sourcePackRegistry, results: sourcePackResults };
     if (import.meta.env.DEV) {
       window.__gevQaRegisterLayer = (targetManager, layerModule) => {
         if (targetManager !== dataManager) throw new Error('QA layer manager mismatch');
