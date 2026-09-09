@@ -52,3 +52,12 @@ camera handoff does not interfere with aircraft tracking or Context isolation.
 A user can move through a lawful public camera network or compare a small set of
 nearby feeds, with every transition attributable and cancellable. Missing feeds
 do not break the mosaic or silently substitute another camera.
+
+## Implementation status
+
+Completed on `improvements/14-camera-handoff-world-mosaic`. Added an
+antimeridian-safe camera distance function, deterministic candidate ranking by
+direction/distance/freshness/calibration/stable ID, and a bounded four-to-six
+tile mosaic state model. Each tile retains its own source, frame age, and
+failure state, so unavailable feeds remain explainable and are never silently
+replaced.
