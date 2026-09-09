@@ -38,3 +38,12 @@ Test coordinate precision, attachment redaction, offline drafts, duplicate
 reports, source takedown, and submission cancellation. A user should be able to
 produce a useful correction report without the application silently editing
 third-party databases.
+
+## Implementation status
+
+Completed on `improvements/25-community-map-verification`. Evidence bundles now
+validate and round coordinates, cap notes and labels, retain only HTTPS source
+attachments, mark every export as `DRAFT_ONLY`, and preserve the explicit
+non-submission OSM disclaimer. This creates a reviewable, offline-friendly
+correction artifact without granting the application edit authority over any
+third-party database.

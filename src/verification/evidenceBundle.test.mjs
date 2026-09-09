@@ -11,3 +11,8 @@ test('creates a local evidence bundle with redacted, source-linked fields', () =
 test('rejects unsupported reports before any submission path exists', () => {
   assert.throws(() => createEvidenceBundle({ entity: { id: 'x' }, reportType: 'auto-edit' }), /supported/);
 });
+
+test('redacts unsafe attachments and rounds coordinates in local drafts', () => {
+  const bundle = createEvidenceBundle({ entity: { id: 'x', latitude: 1.234567, longitude: 2.345678 }, reportType: 'stale-feed', attachments: [{ url: 'file:///private/photo' }, { url: 'https://example.org/evidence' }] });
+  assert.deepEqual(bundle.entity.latitude, 1.2346); assert.equal(bundle.attachments.length, 1); assert.equal(bundle.submission, 'DRAFT_ONLY');
+});
