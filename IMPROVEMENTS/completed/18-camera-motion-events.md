@@ -52,3 +52,12 @@ not overconfident.
 Users can discover broad, temporary changes in lawful public scenes without the
 system producing person-level detections, identity claims, or retained video.
 Every event is time-bounded, source-linked, and clearly labeled as an estimate.
+
+## Implementation status
+
+Completed on `improvements/18-camera-motion-events`. Added a reviewed
+scene-event taxonomy and sanitizer with explicit expiry, source IDs, score
+bands, and method metadata. The privacy guard rejects person, face, plate,
+weapon, identity, track, and object-count outputs, while allowlists let camera
+packs restrict event classes. Existing frame signatures remain descriptive
+pixel-change evidence rather than object or incident detections.
