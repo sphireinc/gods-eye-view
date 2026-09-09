@@ -32,7 +32,8 @@ export function observationFromContextRecord(record, { now = Date.now } = {}) {
     observedAt,
     receivedAt,
     validUntil: record.validUntil || null,
-    geometry: record.geometry || (Array.isArray(coordinates) ? { type: 'Point', coordinates } : null),
+    geometry:
+      record.geometry || (Array.isArray(coordinates) ? { type: 'Point', coordinates } : null),
     properties: record.properties || { label: record.label || record.name || null },
     derivation: record.derivation || ['normalized from a live layer context record'],
     uncertainty: record.uncertainty || null,
@@ -84,13 +85,46 @@ export function recordContextObservation(record) {
   const current = getObservationLedger();
   const input = observationFromContextRecord(record);
   if (!current || !input) return Promise.resolve(null);
-  return current.append(input).then((saved) => {
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('gev:observation-recorded', { detail: saved }));
-    }
-    return saved;
-  }).catch((error) => {
-    console.warn('[Observations] Could not persist context observation:', error);
-    return null;
+  return current
+    .append(input)
+    .then((saved) => {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('gev:observation-recorded', { detail: saved }));
+      }
+      return saved;
+    })
+    .catch((error) => {
+      console.warn('[Observations] Could not persist context observation:', error);
+      return null;
+    });
+}
+
+/** Record one accepted layer refresh as a source-health observation. */
+export function recordLayerObservation({
+  layerId,
+  module,
+  stats = {},
+  result = null,
+  error = null,
+  now = Date.now,
+} = {}) {
+  const sourceId = String(stats.source || module?.source || layerId || '').trim();
+  if (!sourceId) return Promise.resolve(null);
+  const receivedAt = new Date(now()).toISOString();
+  return recordContextObservation({
+    id: `${layerId || module?.id || 'layer'}:refresh`,
+    layerId: layerId || module?.id || 'layer',
+    entityType: 'source-health',
+    source: sourceId,
+    sourceUrl: module?.sourceUrl || null,
+    observedAt: stats.lastUpdate || receivedAt,
+    properties: {
+      status: error ? 'UNAVAILABLE' : stats.status || 'OBSERVED',
+      count: Number.isFinite(Number(stats.count)) ? Number(stats.count) : null,
+      result: result === false ? 'REJECTED' : 'ACCEPTED',
+      error: error ? String(error.message || error) : null,
+    },
+    status: error ? 'UNKNOWN' : stats.stale ? 'STALE' : 'OBSERVED',
+    derivation: ['accepted by DataLayerManager refresh boundary'],
   });
 }
