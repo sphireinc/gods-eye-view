@@ -39,10 +39,15 @@ import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
 import { createSceneBudgetPlanner } from './performance/sceneBudget.js';
 import { createSourcePackRegistry, loadLocalSourcePacks } from './sources/sourcePackSdk.js';
+import { initFirstRunExperience } from './firstRunExperience.js';
+import { initKeySetup } from './keySetup.js';
+import { loadPhotorealisticTileset } from './mapStartup.js';
+import { initSnapshotPanel } from './offline/snapshotPanel.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
 initCorrelationBoard();
+initSnapshotPanel();
 
 /**
  * Extract a human-readable error message from any thrown value.

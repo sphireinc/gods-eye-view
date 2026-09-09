@@ -10756,3 +10756,35 @@ body.scene-playback-mode #key-setup {
 .scene-budget-note {
   color: rgba(217, 245, 243, 0.62);
 }
+
+#snapshot-launcher {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 179;
+  border: 1px solid rgba(95, 210, 220, .52);
+  background: rgba(5, 13, 22, .88);
+  color: #bfeef3;
+  padding: 7px 10px;
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+#snapshot-panel {
+  position: fixed;
+  left: 18px;
+  bottom: 55px;
+  z-index: 181;
+  width: min(360px, calc(100vw - 36px));
+  padding: 13px;
+  border: 1px solid rgba(95, 210, 220, .5);
+  background: rgba(5, 13, 22, .96);
+  color: #c6f2f4;
+  font: 10px/1.4 'JetBrains Mono', monospace;
+  box-shadow: 0 0 25px rgba(0, 180, 210, .18);
+}
+#snapshot-panel[hidden] { display: none; }
+#snapshot-panel > button:first-child { float: right; border: 0; background: none; color: inherit; font-size: 20px; cursor: pointer; }
+#snapshot-panel h2 { margin: 0 0 8px; color: #55d9df; font-size: 14px; }
+#snapshot-panel button:not(:first-child) { margin: 4px 4px 4px 0; border: 1px solid rgba(95, 210, 220, .45); background: transparent; color: inherit; padding: 6px 8px; font: 9px 'JetBrains Mono', monospace; cursor: pointer; }
+#snapshot-panel [data-snapshot-status] { color: #ffd166; }

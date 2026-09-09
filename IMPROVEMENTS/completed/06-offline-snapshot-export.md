@@ -58,3 +58,17 @@ A user can capture a bounded scene, open it on a machine without network access,
 see the same camera and observations with honest offline labels, and export
 selected public records without leaking credentials or silently redistributing
 provider-prohibited media.
+
+## Implemented surfaces
+
+- `src/offline/snapshot.js` defines a versioned offline-safe archive with
+  capture modes, redaction, bounded entity/byte/coordinate validation,
+  source/license metadata, capture range, app revision, limitations, and
+  explicit network-disabled import state.
+- Unlicensed thumbnails are refused; diagnostic exports redact notes and
+  credential-shaped fields; imports verify the content digest before any store
+  handoff.
+- Selected public records can be exported as redacted GeoJSON or CSV, and an
+  IndexedDB store validates the complete archive before atomically writing it.
+- `src/offline/snapshotPanel.js` adds capture/open controls and marks imported
+  content as offline in the UI without activating network polling.

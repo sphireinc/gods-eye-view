@@ -966,7 +966,16 @@
     <p data-budget-summary>Waiting for allocation…</p>
     <ul data-budget-layers></ul>
     <p class="scene-budget-note">Allocations request decluttering; they never disable a selected source or claim data is absent.</p>
-  </aside>
+  <button id="snapshot-launcher" type="button" aria-controls="snapshot-panel">OFFLINE SNAPSHOT</button>
+  <aside id="snapshot-panel" hidden aria-label="Offline snapshot capture">
+    <button type="button" data-snapshot-close aria-label="Close offline snapshot panel">×</button>
+    <h2>Offline snapshot</h2>
+    <p>Capture a bounded public-data view for offline teaching, citation, or a redacted issue report. Imports never activate network polling.</p>
+    <button type="button" data-snapshot-capture>CAPTURE SNAPSHOT</button>
+    <button type="button" data-snapshot-load>OPEN SNAPSHOT</button>
+     <input type="file" data-snapshot-file accept="application/json,.json" hidden />
+     <p data-snapshot-status role="status" aria-live="polite">Waiting for normalized public observations.</p>
+   </aside>
 
   <!-- Loading screen -->
   <div id="loading-screen">
