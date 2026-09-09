@@ -50,3 +50,13 @@ With the optional cache enabled, a reload and a second local tab reuse bounded,
 source-labeled data; short outages preserve last-good context; invalid or
 over-age data stays visibly stale; cache status and deletion are inspectable;
 and the app's safe localhost default remains unchanged when the feature is off.
+
+## Implementation status
+
+Completed on `improvements/12-network-optional-edge-cache`. The bounded cache
+core now supports explicit enable/bypass behavior, request coalescing, source
+and license metadata, payload hashes, acquisition/source timestamps, fresh and
+stale horizons, source-scoped invalidation, bounded byte trimming, and a
+versioned metadata-preserving export. It remains process-local and opt-in, so
+the application has no new cache dependency or network requirement when
+disabled.
