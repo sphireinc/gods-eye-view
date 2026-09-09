@@ -42,3 +42,12 @@ Test duplicate stories, source outages, stale inputs, time zones, empty days,
 and sensational-card suppression. A user should receive a concise, source-linked
 overview that leads into the globe and remains understandable when no major
 event occurred.
+
+## Implementation status
+
+Completed on `improvements/28-world-pulse-briefing`. World Pulse now supports
+muted categories, a quiet mode that suppresses breaking/alert states, bounded
+card counts, deterministic ranking, deduplicated source IDs, explicit selection
+reasons, and the existing visibility/severity caveats. Markdown output carries
+the reason each public signal was selected instead of presenting an opaque
+severity score.
