@@ -40,3 +40,12 @@ Test different time zones, unequal observation coverage, missing secondary
 data, antimeridian regions, rapid location swaps, and camera synchronization. A
 user should be able to compare two places without losing track of which source
 or time window each value represents.
+
+## Implementation status
+
+Completed on `improvements/27-region-comparison-studio`. Comparisons now carry
+metric units, source time basis, explicit missing-data policy, normalized-value
+flags, coverage ratios, stable tie ordering, and a caveat that raw counts are
+not comparable across unequal coverage. Unknown values remain distinct from
+zero, and the comparison remains descriptive rather than causal or safety
+oriented.
