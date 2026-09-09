@@ -982,8 +982,16 @@
     <button type="button" data-snapshot-capture>CAPTURE SNAPSHOT</button>
     <button type="button" data-snapshot-load>OPEN SNAPSHOT</button>
      <input type="file" data-snapshot-file accept="application/json,.json" hidden />
-     <p data-snapshot-status role="status" aria-live="polite">Waiting for normalized public observations.</p>
-   </aside>
+   <p data-snapshot-status role="status" aria-live="polite">Waiting for normalized public observations.</p>
+ </aside>
+  <button id="cctv-coverage-launcher" type="button" aria-controls="cctv-coverage-panel">CAMERA COVERAGE</button>
+  <aside id="cctv-coverage-panel" hidden aria-label="Public camera coverage comparison">
+    <button type="button" data-cctv-coverage-close aria-label="Close camera coverage">×</button>
+    <h2>Public camera coverage</h2>
+    <p>Compare public feeds and pose estimates. Frustums and overlaps are estimated, never verified surveillance coverage.</p>
+    <ol data-cctv-coverage-list></ol>
+   <p data-cctv-coverage-status role="status" aria-live="polite"></p>
+ </aside>
 
   <!-- Loading screen -->
   <div id="loading-screen">

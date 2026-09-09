@@ -48,3 +48,16 @@ provides a verified pose.
 A user can compare nearby public cameras, inspect the provenance and age of each
 pose/frame, calibrate locally with reversible changes, and distinguish estimated
 coverage from a real observed image.
+
+## Implemented surfaces
+
+- `src/data/cctvCoverage.js` normalizes camera pose/frame provenance, freshness,
+  calibration confidence, estimated footprints, blind-spot reasons, bounded
+  antimeridian-aware queries, overlap estimates, and reversible calibration
+  history.
+- `src/cctv/coveragePanel.js` adds a public-camera comparison surface with
+  provider, frame, confidence, estimated-overlap, and caveat labels.
+- Calibration records are versioned and preserve the source pose as a
+  before-value; manual alignment remains explicitly estimated.
+- Tests cover FOV/pose validation, stale frames, antimeridian queries,
+  estimated overlap, and calibration undo behavior.
