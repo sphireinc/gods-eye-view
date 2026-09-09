@@ -62,3 +62,18 @@ degradation is visible and reversible, tracked subjects remain present, and the
 diagnostics view explains which budget decision is active. Existing allocation
 tests remain green and no layer is allowed to silently turn a source into an
 empty green state.
+
+## Implemented surfaces
+
+- `src/performance/sceneBudget.js` provides bounded frame sampling, global
+  allocation, stable priority ordering, selected-subject reservations,
+  degradation steps, quality lock, performance-first mode, and read-only
+  diagnostics.
+- `DataLayerManager` accepts the planner and publishes allocations without
+  changing layer visibility. Layers may opt into `applySceneBudget`; all other
+  layers retain their source and remain responsible for their own rendering.
+- The main application installs the planner after the complete layer registry
+  is sealed and exposes a diagnostics panel with frame time, available units,
+  per-layer allocation, and the reason for each reduction.
+- Planner tests cover fairness, reservations, degradation behavior, bounded
+  samples, and quality lock.

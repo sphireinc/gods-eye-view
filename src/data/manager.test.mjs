@@ -3130,4 +3130,20 @@ test('replay suspends live refresh and exposes honest layer availability', async
   listener({ mode: 'LIVE' });
   assert.equal(manager.getAll().find(({ id }) => id === 'live-only').stats.replay, null);
   await manager.destroyAll();
+test('manager applies scene allocations without changing layer visibility', () => {
+  const manager = new DataLayerManager({});
+  const allocations = [];
+  manager.register({
+    id: 'dense', name: 'Dense', icon: '', source: 'test',
+    budgetDescriptor: { priority: 90, maxVisibleCount: 20 },
+    applySceneBudget(allocation) { allocations.push(allocation); },
+    getStats() { return { count: 20 }; },
+  });
+  const planner = {
+    plan(layers) { return { allocations: { [layers[0].id]: { step: 'REDUCED', visibleCount: 5, reason: 'test' } } }; },
+  };
+  manager.attachSceneBudgetPlanner(planner);
+  assert.equal(allocations[0].visibleCount, 5);
+  assert.equal(manager.isEnabled('dense'), false);
+  assert.equal(manager.getSceneBudget().allocations.dense.step, 'REDUCED');
 });

@@ -37,6 +37,7 @@ import { installScopeMask } from './scopeMask.js';
 import { initTimeRail } from './time/timeRail.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
+import { createSceneBudgetPlanner } from './performance/sceneBudget.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
@@ -238,6 +239,31 @@ async function init() {
     }
     // Restoration starts only after the complete production registry is sealed.
     dataManager.finalizeRegistrations(LAYER_STATE_REGISTRY);
+    const sceneBudgetPlanner = createSceneBudgetPlanner();
+    dataManager.attachSceneBudgetPlanner(sceneBudgetPlanner);
+    window.__GEV_SCENE_BUDGET__ = sceneBudgetPlanner;
+    const budgetPanel = document.getElementById('scene-budget-diagnostics');
+    const budgetSummary = budgetPanel?.querySelector('[data-budget-summary]');
+    const budgetLayers = budgetPanel?.querySelector('[data-budget-layers]');
+    const renderBudget = (allocation) => {
+      if (!allocation || !budgetSummary || !budgetLayers) return;
+      budgetSummary.textContent = `${allocation.averageCpuMs.toFixed(1)} ms CPU · ${allocation.availableUnits} units available · ${allocation.qualityLock ? 'QUALITY LOCK' : 'ADAPTIVE'}`;
+      budgetLayers.replaceChildren(...Object.values(allocation.allocations).map((item) => {
+        const row = document.createElement('li');
+        row.textContent = `${item.layerId}: ${item.step} · ${item.visibleCount} visible · ${item.reason}`;
+        return row;
+      }));
+    };
+    renderBudget(dataManager.getSceneBudget());
+    dataManager.subscribe((event) => {
+      if (event.type === 'scene-budget') renderBudget(event.allocation);
+    });
+    document.getElementById('scene-budget-launcher')?.addEventListener('click', () => {
+      if (budgetPanel) budgetPanel.hidden = false;
+    });
+    budgetPanel?.querySelector('[data-budget-close]')?.addEventListener('click', () => {
+      budgetPanel.hidden = true;
+    });
     if (import.meta.env.DEV) {
       window.__gevQaRegisterLayer = (targetManager, layerModule) => {
         if (targetManager !== dataManager) throw new Error('QA layer manager mismatch');

@@ -10522,6 +10522,7 @@ body.scene-playback-mode #key-setup {
   border-color: rgba(255, 170, 150, 0.65);
   outline: none;
 }
+<<<<<<< HEAD
 #time-rail {
   position: fixed;
   left: 50%;
@@ -10697,3 +10698,38 @@ body.scene-playback-mode #key-setup {
   color: #55d9df;
   font-size: 10px;
 }
+
+#scene-budget-launcher {
+  position: fixed;
+  right: 18px;
+  bottom: 48px;
+  z-index: 179;
+  border: 1px solid rgba(255, 209, 102, .48);
+  background: rgba(5, 13, 22, .88);
+  color: #ffd166;
+  padding: 7px 10px;
+  font: 10px 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+.scene-budget-diagnostics {
+  position: fixed;
+  right: 18px;
+  bottom: 86px;
+  z-index: 181;
+  width: min(370px, calc(100vw - 36px));
+  max-height: 55vh;
+  overflow: auto;
+  padding: 13px;
+  border: 1px solid rgba(255, 209, 102, .48);
+  background: rgba(5, 13, 22, .96);
+  color: #d9f5f3;
+  font: 10px/1.4 'JetBrains Mono', monospace;
+  box-shadow: 0 0 25px rgba(255, 180, 40, .14);
+}
+.scene-budget-diagnostics[hidden] { display: none; }
+.scene-budget-diagnostics > button { float: right; border: 0; background: none; color: inherit; font-size: 20px; cursor: pointer; }
+.scene-budget-diagnostics h2 { margin: 0 0 8px; color: #ffd166; font-size: 14px; }
+.scene-budget-diagnostics ul { padding-left: 17px; }
+.scene-budget-diagnostics li { margin: 4px 0; overflow-wrap: anywhere; }
+.scene-budget-note { color: rgba(217, 245, 243, .62); }
