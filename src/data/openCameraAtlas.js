@@ -1,46 +1,23 @@
-const FEED_TYPES = new Set(['JPEG', 'MJPEG', 'HLS', 'DASH', 'EMBED', 'METADATA']);
-const PRIVACY_CLASSES = new Set(['scenic', 'traffic', 'weather', 'wildlife', 'transit', 'mixed-public-space']);
-
-function finite(value, field) {
-  const number = Number(value);
-  if (!Number.isFinite(number)) throw new TypeError(`${field} must be finite`);
-  return number;
+export const CAMERA_CATALOG_VERSION = 1;
+const FEED_TYPES = new Set(['jpeg', 'mjpeg', 'hls', 'dash', 'embedded', 'metadata']);
+const PRIVACY_CLASSES = new Set(['scenic', 'traffic', 'weather', 'wildlife', 'transit', 'mixed']);
+export function validateCameraRecord(record) {
+  const camera = { ...record, id: String(record?.id || '').trim(), operator: String(record?.operator || '').trim(), sourcePage: String(record?.sourcePage || '').trim(), feedType: String(record?.feedType || '').toLowerCase(), privacyClass: String(record?.privacyClass || '').toLowerCase(), latitude: Number(record?.latitude), longitude: Number(record?.longitude) };
+  const errors = [];
+  if (!camera.id || !/^[a-z0-9][a-z0-9._-]{1,96}$/i.test(camera.id)) errors.push('id');
+  if (!camera.operator) errors.push('operator');
+  if (!/^https:\/\//i.test(camera.sourcePage)) errors.push('sourcePage');
+  if (!FEED_TYPES.has(camera.feedType)) errors.push('feedType');
+  if (!PRIVACY_CLASSES.has(camera.privacyClass)) errors.push('privacyClass');
+  if (!Number.isFinite(camera.latitude) || camera.latitude < -90 || camera.latitude > 90) errors.push('latitude');
+  if (!Number.isFinite(camera.longitude) || camera.longitude < -180 || camera.longitude > 180) errors.push('longitude');
+  return errors.length ? { ok: false, errors } : { ok: true, value: { ...camera, catalogVersion: CAMERA_CATALOG_VERSION, projection: camera.projection === 'calibrated' ? 'calibrated' : 'estimated' } };
 }
-
-export function validateCameraCatalogEntry(entry) {
-  if (!entry || typeof entry !== 'object') throw new TypeError('camera entry is required');
-  const latitude = finite(entry.latitude, 'latitude');
-  const longitude = finite(entry.longitude, 'longitude');
-  const feedType = String(entry.feedType || 'METADATA').toUpperCase();
-  const privacyClass = String(entry.privacyClass || '').toLowerCase();
-  if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) throw new RangeError('camera coordinates out of range');
-  if (!FEED_TYPES.has(feedType)) throw new TypeError(`unsupported camera feed type: ${feedType}`);
-  if (!PRIVACY_CLASSES.has(privacyClass)) throw new TypeError(`unsupported camera privacy class: ${privacyClass}`);
-  if (!entry.sourcePage || !entry.operator || !entry.attribution) throw new TypeError('camera operator, sourcePage, and attribution are required');
-  return Object.freeze({
-    id: String(entry.id), operator: String(entry.operator), region: String(entry.region || 'Unknown'),
-    latitude, longitude, elevationM: entry.elevationM == null ? null : finite(entry.elevationM, 'elevationM'),
-    headingDeg: entry.headingDeg == null ? null : finite(entry.headingDeg, 'headingDeg'),
-    fovDeg: entry.fovDeg == null ? null : finite(entry.fovDeg, 'fovDeg'), feedType, privacyClass,
-    sourcePage: String(entry.sourcePage), termsUrl: entry.termsUrl ? String(entry.termsUrl) : null,
-    attribution: String(entry.attribution), cadenceSec: entry.cadenceSec == null ? null : finite(entry.cadenceSec, 'cadenceSec'),
-    lastReviewed: entry.lastReviewed ? String(entry.lastReviewed) : null,
-    permissions: Object.freeze({ proxy: entry.permissions?.proxy === true, cache: entry.permissions?.cache === true, thumbnail: entry.permissions?.thumbnail !== false, projection: entry.permissions?.projection === true, export: entry.permissions?.export === true }),
-    status: entry.status || 'UNKNOWN',
-  });
-}
-
-export function createOpenCameraAtlas(entries = []) {
-  const cameras = new Map();
+export function createCameraAtlas(records = []) {
+  const cameras = records.map(validateCameraRecord).filter((result) => result.ok).map((result) => result.value);
   return {
-    add(entry) { const camera = validateCameraCatalogEntry(entry); cameras.set(camera.id, camera); return camera; },
-    remove(id) { return cameras.delete(id); },
-    get(id) { return cameras.get(id) || null; },
-    list({ privacyClass, feedType, availableOnly = false } = {}) {
-      return [...cameras.values()].filter((camera) => (!privacyClass || camera.privacyClass === privacyClass) && (!feedType || camera.feedType === feedType) && (!availableOnly || camera.status === 'AVAILABLE'));
-    },
-    near(latitude, longitude, radiusDeg = 5) {
-      return [...cameras.values()].filter((camera) => Math.abs(camera.latitude - latitude) <= radiusDeg && Math.abs(camera.longitude - longitude) <= radiusDeg);
-    },
+    list({ bounds, type, available } = {}) { return cameras.filter((camera) => (!type || camera.privacyClass === type) && (available === undefined || camera.available === available) && (!bounds || (camera.latitude >= bounds.south && camera.latitude <= bounds.north && (bounds.west <= bounds.east ? camera.longitude >= bounds.west && camera.longitude <= bounds.east : camera.longitude >= bounds.west || camera.longitude <= bounds.east)))); },
+    cluster({ zoom = 2, bounds } = {}) { const cell = Math.max(0.05, 18 / (2 ** Math.max(0, Math.min(8, Number(zoom) || 0)))); const groups = new Map(); for (const camera of this.list({ bounds })) { const key = `${Math.floor((camera.latitude + 90) / cell)}:${Math.floor((camera.longitude + 180) / cell)}`; const group = groups.get(key) || { latitude: 0, longitude: 0, count: 0, available: 0 }; group.latitude += camera.latitude; group.longitude += camera.longitude; group.count += 1; group.available += camera.available === true ? 1 : 0; groups.set(key, group); } return [...groups.values()].map((group) => ({ ...group, latitude: group.latitude / group.count, longitude: group.longitude / group.count })); },
+    get(id) { return cameras.find((camera) => camera.id === id) || null; }, size() { return cameras.length; },
   };
 }
