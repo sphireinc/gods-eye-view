@@ -49,3 +49,12 @@ Require the doctor to produce stable output for review diffs.
 A contributor can create a regional pack, run one command to find errors, preview
 it locally, see all attribution and failure states, and produce a reviewable
 change without editing unrelated core runtime files.
+
+## Implementation status
+
+Completed on `improvements/17-camera-pack-workbench`. Added a deterministic
+camera-pack doctor core that reports PASS, WARN, or BLOCKED for duplicate IDs,
+coordinate bounds, HTTPS source pages, feed types, attribution, and pack terms.
+It also emits stable review-diff diagnostics and a contributor README template,
+providing a safe foundation for a CLI/workbench that can validate packs without
+touching runtime catalogs.
