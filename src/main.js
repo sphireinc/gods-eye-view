@@ -41,6 +41,7 @@ import { initTimeRail } from './time/timeRail.js';
 import { StyleManager } from './ui.js';
 import { initGevVoiceCommands } from './voice/gevRealtime.js';
 import { initAlertPanel } from './alerts/alertPanel.js';
+import { initMissionPanel } from './missions/missionPanel.js';
 
 initLogoGaze();
 const timeController = initTimeRail();
@@ -229,6 +230,7 @@ async function init() {
       );
     }
     if (alertPanel) dataManager.attachAlertEngine(alertPanel);
+    initMissionPanel({ manager: dataManager });
     dataManager.register(flightsLayer);
     dataManager.register(militaryFlightsLayer);
     dataManager.register(earthquakesLayer);
