@@ -49,3 +49,12 @@ Test empty regions, conflicting sources, missing locality names, stale weather,
 offline snapshots, long place names, language fallback, and source-link
 preservation. A user should be able to select any place and receive a useful,
 readable, source-linked briefing without the app inventing facts.
+
+## Implementation status
+
+Completed on `improvements/22-place-briefing`. The deterministic briefing
+builder now emits all seven stable sections, preserves evidence states and
+limitations, filters source links to HTTPS, renders source links in Markdown,
+and exposes a reproducible cache key based on place geometry, time window,
+source versions, and ledger generation. Empty or stale evidence remains
+explicitly caveated rather than summarized as a claim about the place.
