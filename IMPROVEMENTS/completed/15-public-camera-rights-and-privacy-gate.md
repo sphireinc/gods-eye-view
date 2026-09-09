@@ -53,3 +53,12 @@ Every camera visible in the app has a reviewable source record and explicit
 display permissions. Users can report a source, maintainers can withdraw it
 without a code release, and the system never treats technical accessibility as
 permission to republish.
+
+## Implementation status
+
+Completed on `improvements/15-camera-rights-privacy-gate`. Added a versioned
+review gate requiring operator identity, source/terms URLs, permission basis,
+review ownership and expiry, takedown contact, and explicit display
+permissions. Runtime checks distinguish link, frame, projection, cache, and
+export rights; a denylisted source reports `WITHHELD BY SOURCE REVIEW`; and
+takedown reports are bounded to catalog metadata and a user-supplied reason.
