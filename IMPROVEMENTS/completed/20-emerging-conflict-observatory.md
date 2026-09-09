@@ -269,3 +269,14 @@ A user can open a region, see a dated and source-linked account of changing
 public evidence, compare conflict events with humanitarian conditions, inspect
 source disagreement, and understand what is unknown. The app never turns that
 context into a tactical targeting system or presents a forecast as a fact.
+
+## Implementation status
+
+Completed on `improvements/20-emerging-conflict-observatory`. The observatory
+core now normalizes coarse, source-stamped evidence; aggregates transparent
+activity, source-diversity, and evidence-type indicators; handles invalid time
+data safely; rounds point precision; strips non-HTTPS source links; and rejects
+tactical fields or tactical language before it enters the model. Its
+limitations explicitly describe public-evidence uncertainty and lack of
+independent corroboration, preserving the conflict-observatory rather than
+battlefield-map charter.
