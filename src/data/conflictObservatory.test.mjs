@@ -22,3 +22,8 @@ test('creates transparent indicators and uncertainty limitations', () => {
 test('rejects tactical fields before they can enter the observatory model', () => {
   assert.throws(() => normalizeConflictEvidence({ ...evidence('x', 'source'), target: 'sensitive' }), /disallowed/);
 });
+
+test('drops non-HTTPS source links and rejects tactical language anywhere in input', () => {
+  assert.equal(normalizeConflictEvidence({ ...evidence('safe', 'source'), sourceUrl: 'http://example.org' }).sourceUrl, null);
+  assert.throws(() => normalizeConflictEvidence({ ...evidence('unsafe', 'source'), caveats: ['strike support'] }), /tactical/);
+});

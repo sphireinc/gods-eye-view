@@ -1,5 +1,6 @@
 const STATES = new Set(['WATCH', 'CHANGING', 'ESTABLISHED', 'UNCERTAIN']);
 const DISALLOWED_FIELDS = new Set(['target', 'targetId', 'weapon', 'strike', 'actorIntent', 'unitPosition', 'routeRecommendation']);
+const DISALLOWED_TEXT = /target(?:ing|ed)?|strike support|weapon effects|actor intent|unit tracking|route recommendation/i;
 
 function required(value, field) {
   const text = String(value ?? '').trim();
@@ -11,6 +12,7 @@ function required(value, field) {
 export function normalizeConflictEvidence(input, { precision = 'coarse' } = {}) {
   if (!input || typeof input !== 'object') throw new TypeError('evidence is required');
   for (const field of DISALLOWED_FIELDS) if (field in input) throw new Error(`disallowed conflict field: ${field}`);
+  if (DISALLOWED_TEXT.test(JSON.stringify(input))) throw new Error('disallowed tactical language');
   const sourceId = required(input.sourceId || input.source?.id, 'sourceId');
   const regionId = required(input.regionId, 'regionId');
   const kind = required(input.kind, 'kind');
@@ -20,7 +22,7 @@ export function normalizeConflictEvidence(input, { precision = 'coarse' } = {}) 
     observedAt: required(input.observedAt, 'observedAt'),
     publishedAt: input.publishedAt || null,
     status: input.status || 'REPORTED',
-    sourceUrl: input.sourceUrl || null,
+    sourceUrl: input.sourceUrl && /^https:\/\//i.test(input.sourceUrl) ? input.sourceUrl : null,
     attribution: input.attribution || sourceId,
     precision,
     humanitarian: input.humanitarian ? { ...input.humanitarian } : null,
@@ -38,7 +40,8 @@ export function assessConflictRegion(evidence, { baselineCount = null, windowMs 
   const sourceIds = [...new Set(normalized.map((item) => item.sourceId))];
   const byKind = new Map();
   normalized.forEach((item) => byKind.set(item.kind, (byKind.get(item.kind) || 0) + 1));
-  const latest = normalized.reduce((max, item) => Math.max(max, Date.parse(item.observedAt)), 0);
+  const parsedTimes = normalized.map((item) => Date.parse(item.observedAt)).filter(Number.isFinite);
+  const latest = parsedTimes.length ? Math.max(...parsedTimes) : Date.now();
   const earliest = latest - windowMs;
   const recent = normalized.filter((item) => Date.parse(item.observedAt) >= earliest);
   const indicators = [
@@ -49,7 +52,7 @@ export function assessConflictRegion(evidence, { baselineCount = null, windowMs 
   const state = sourceIds.length < 2 ? 'UNCERTAIN' : recent.length >= 5 ? 'CHANGING' : 'WATCH';
   return Object.freeze({
     regionId: normalized[0]?.regionId || null,
-    window: { from: new Date(earliest).toISOString(), to: new Date(latest || Date.now()).toISOString() },
+    window: { from: new Date(earliest).toISOString(), to: new Date(latest).toISOString() },
     indicators, state: STATES.has(state) ? state : 'UNCERTAIN',
     evidence: normalized,
     limitations: [
