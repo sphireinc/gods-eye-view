@@ -1,0 +1,6 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { allowedCameraMode, createTakedownReport, reviewCameraSource } from './cameraRightsGate.js';
+const MANIFEST = { id: 'cam-1', operator: 'City', sourcePage: 'https://city.example/cam', termsUrl: 'https://city.example/terms', permissionBasis: 'operator-publication', reviewOwner: 'reviewer', reviewedAt: '2026-01-01', expiresAt: '2099-01-01', takedownContact: 'https://city.example/contact', permissions: ['link-only', 'thumbnail'] };
+test('requires a current review and enforces restrictive display permissions', () => { assert.equal(reviewCameraSource(MANIFEST, { now: Date.parse('2026-01-01') }).state, 'APPROVED'); assert.equal(allowedCameraMode(MANIFEST, 'projection'), false); assert.equal(allowedCameraMode(MANIFEST, 'frame'), true); assert.equal(reviewCameraSource(MANIFEST, { denylist: new Set(['cam-1']) }).state, 'WITHHELD BY SOURCE REVIEW'); });
+test('creates bounded, non-identifying takedown reports', () => { const report = createTakedownReport({ cameraId: 'cam-1', sourcePage: MANIFEST.sourcePage, reason: 'Please review this listing' }); assert.equal(report.version, 1); assert.equal(report.cameraId, 'cam-1'); assert.ok(report.reason.length < 500); });
