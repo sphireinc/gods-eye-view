@@ -52,3 +52,16 @@ return home” mission and migrate one existing QA flow to prove the format.
 A user can author, save, share, and replay a mission with explicit requirements,
 truthful pauses, reversible cleanup, and no executable content. The same mission
 can serve as a demo, a lesson, or a regression fixture.
+
+## Implemented surfaces
+
+- `src/missions/missionAuthoring.js` validates versioned data-only steps,
+  requirements, observable assertions, bounded coordinates, cleanup policy, and
+  public-observatory language; executable content and operational terminology
+  are rejected.
+- `src/missions/missionRunner.js` provides a cancellable epoch-owned state
+  machine, injected manager/camera/action seams, assertion pauses, and exact
+  pre-mission restoration after cancellation or failure.
+- `src/missions/missionPanel.js` provides local save, preview, and export
+  controls with explicit data-only messaging; imported mission text never gets
+  executed.

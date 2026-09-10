@@ -653,6 +653,17 @@
   </div>
 
   <!-- Scene Director Panel -->
+  <button id="mission-authoring-launcher" type="button" aria-controls="mission-authoring-panel">AUTHOR MISSION</button>
+  <aside id="mission-authoring-panel" hidden aria-label="Mission authoring">
+    <button type="button" data-mission-close aria-label="Close mission authoring">×</button>
+    <h2>Mission authoring</h2>
+    <p>Data-only, public-observatory steps. No scripts, arbitrary URLs, secrets, or operational language are permitted.</p>
+    <textarea data-mission-editor rows="9">{"title":"Public signals lesson","steps":[{"type":"end"}]}</textarea>
+    <button type="button" data-mission-save>SAVE LOCAL</button>
+    <button type="button" data-mission-run>PREVIEW</button>
+    <button type="button" data-mission-export>EXPORT</button>
+    <p data-mission-status role="status" aria-live="polite">Ready</p>
+  </aside>
   <div id="scene-panel" class="panel-collapsible collapsed" data-panel-id="scene-panel">
     <div class="panel-glow"></div>
     <div class="scene-panel-inner">
