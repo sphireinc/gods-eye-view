@@ -10888,3 +10888,22 @@ body.scene-playback-mode #key-setup {
 #mission-authoring-panel textarea { width: 100%; box-sizing: border-box; resize: vertical; background: #071723; border: 1px solid rgba(95, 210, 220, .35); color: #e7ffff; padding: 7px; font: 10px/1.4 'JetBrains Mono', monospace; }
 #mission-authoring-panel button:not(:first-child) { margin: 5px 5px 5px 0; border: 1px solid rgba(95, 210, 220, .45); background: transparent; color: inherit; padding: 6px 8px; font: 9px 'JetBrains Mono', monospace; cursor: pointer; }
 #mission-authoring-panel [data-mission-status] { color: #55d9df; }
+
+#provider-health-chip {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 20; display: inline-flex; gap: .4rem; align-items: center;
+  padding: .55rem .7rem; color: rgba(199,225,231,.8); font: 600 .6rem var(--font-mono); letter-spacing: .08rem;
+  background: rgba(8,18,25,.88); border: 1px solid rgba(69,224,255,.3); border-radius: .35rem; cursor: pointer;
+}
+#provider-health-panel { position: fixed; right: 1rem; bottom: 3.8rem; z-index: 30; width: min(34rem, calc(100vw - 2rem)); max-height: 75vh; overflow: auto; padding: 1rem; color: #c7e1e7; background: rgba(7,16,23,.97); border: 1px solid rgba(69,224,255,.45); border-radius: .5rem; box-shadow: 0 1rem 4rem #000b; }
+#provider-health-panel.visible { display: block; }
+.provider-health-header, .provider-health-footer { display:flex; align-items:center; justify-content:space-between; gap:.7rem; }
+.provider-health-kicker { color:#45e0ff; font: .58rem var(--font-mono); letter-spacing:.12rem; }
+.provider-health-header button { color:#c7e1e7; background:none; border:0; font-size:1.3rem; cursor:pointer; }
+.provider-health-description { color:rgba(199,225,231,.65); font:.68rem/1.4 var(--font-mono); }
+.provider-health-row { display:grid; grid-template-columns: 1fr auto; gap:.15rem .5rem; padding:.65rem 0; border-top:1px solid rgba(199,225,231,.12); }
+.provider-health-row small { grid-column:1 / -1; color:rgba(199,225,231,.55); font:.58rem var(--font-mono); }
+.provider-health-state { color:#7de8a4; font:600 .55rem var(--font-mono); letter-spacing:.08rem; }
+.provider-health-row[data-state='KEYLESS'] .provider-health-state, .provider-health-row[data-state='STALE'] .provider-health-state { color:#ffc96b; }
+.provider-health-row button, .provider-health-footer button { padding:.3rem .45rem; color:#9eddec; background:none; border:1px solid rgba(69,224,255,.3); border-radius:.25rem; font:.52rem var(--font-mono); cursor:pointer; }
+.provider-health-footer { margin-top:.7rem; align-items:flex-start; flex-direction:column; }
+.provider-health-footer small { color:rgba(199,225,231,.65); font:.58rem var(--font-mono); }
