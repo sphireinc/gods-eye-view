@@ -10907,3 +10907,8 @@ body.scene-playback-mode #key-setup {
 .provider-health-row button, .provider-health-footer button { padding:.3rem .45rem; color:#9eddec; background:none; border:1px solid rgba(69,224,255,.3); border-radius:.25rem; font:.52rem var(--font-mono); cursor:pointer; }
 .provider-health-footer { margin-top:.7rem; align-items:flex-start; flex-direction:column; }
 .provider-health-footer small { color:rgba(199,225,231,.65); font:.58rem var(--font-mono); }
+
+#accessible-scene-summary { position: fixed; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+#accessible-scene-summary:focus-within { left: 1rem; top: 1rem; z-index: 40; width: min(24rem, calc(100vw - 2rem)); height: auto; padding: 1rem; color: #fff; background: #06121a; border: 2px solid #45e0ff; }
+.accessible-scene-row { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; font: .7rem var(--font-mono); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; } }

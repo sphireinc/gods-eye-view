@@ -53,3 +53,14 @@ A keyboard-only user can launch a mission, enable a layer, select a contact,
 read its source state, change the camera, and exit. Screen-reader users receive
 the same meaningful state without telemetry spam, and reduced-motion/high-
 contrast modes preserve both function and truth labels.
+
+## Implementation status
+
+Completed on `improvements/11-accessibility-input-modes`. Added a versioned
+input command surface with keyboard precedence, gamepad routing, reduced-motion
+detection, and a semantic scene summary. The Cesium canvas now receives an
+accessible name, meaningful command announcements avoid telemetry spam, and
+the summary exposes camera locality, selected entity, visible layers, and
+health without requiring canvas picking. Focus-visible/reduced-motion rules
+and a compact high-contrast summary surface are included; command handlers
+remain injectable for non-visual testing.
