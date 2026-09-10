@@ -81,6 +81,25 @@ Start with the included data sources, then add your own. Each layer is a separat
 
 ## ⚡ Quick Start
 
+### Docker Compose
+
+Run the complete application, including the Vite server-side API brokers used
+by the live data layers:
+
+```bash
+docker compose up
+```
+
+Then open <http://localhost:4173>. The `.env` file is optional; copy
+`.env.example` to `.env` when you want to provide provider credentials. Set
+`GEV_PORT` if port 4173 is already in use. Stop the service with `Ctrl-C`, or
+use `docker compose down`.
+
+The image intentionally runs the Vite application server instead of a static
+file server. `vite.config.js` contains the same-origin `/api/*` proxy and
+credential-handling middleware that the browser relies on for OpenSky, CCTV,
+weather, provider diagnostics, voice, and other live integrations.
+
 **Start without an account or API keys.** Both paths open the same app with
 Esri satellite imagery and keyless terrain. OSM is the fallback if Esri is
 unreachable. Flights, military traffic, satellites, earthquakes, public
